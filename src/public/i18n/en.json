@@ -1,0 +1,7 @@
+{
+  "truncateNumber": {
+    "thousand": "T",
+    "million": "M",
+    "billion": "B"
+  }
+}

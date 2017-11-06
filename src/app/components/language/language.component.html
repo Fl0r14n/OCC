@@ -1,0 +1,8 @@
+<ul class="nav justify-content-end language-component">
+  <li class="nav-item" *ngFor="let lang of translate.getLangs()">
+    <a [routerLink]="null" [ngClass]="{'active': lang === translate.currentLang}"
+       (click)="translate.use(lang)">
+      {{lang | uppercase}}
+    </a>
+  </li>
+</ul>

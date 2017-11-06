@@ -1,0 +1,34 @@
+$fa-font-path: "~font-awesome/fonts";
+
+//bootstrap
+$enable-rounded: false;
+$font-family-base: "Work Sans";
+$h1-font-size: 36px !important;
+$h2-font-size: 28px !important;
+$h3-font-size: 20px !important;
+$h4-font-size: 14px !important;
+
+$dropdown-link-color: #3c3c3d;
+$dropdown-link-active-bg: #3c3c3d;
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  md1: 800px,
+  lg: 992px,
+  xl: 1200px
+) !default;
+
+@import "~bootstrap/scss/mixins/breakpoints";
+
+@include media-breakpoint-up(sm) {
+  $h1-font-size: 46px !important;
+  $h2-font-size: 36px !important;
+  $h3-font-size: 28px !important;
+  $h4-font-size: 16px !important;
+}
+
+@import "~bootstrap/scss/bootstrap";
+@import "~font-awesome/scss/font-awesome";
+@import "~typeface-work-sans/index.css";

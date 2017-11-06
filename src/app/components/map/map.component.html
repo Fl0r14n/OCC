@@ -1,0 +1,7 @@
+<div class="map-component" (mouseover)="mouseOver()" (mouseleave)="mouseLeave()" (click)="mouseOver()">
+  <div class="overlay" [@hide]="overlay"></div>
+  <div class='agm-map-container-inner sebm-google-map-container-inner'></div>
+  <div class='agm-map-content'>
+    <ng-content></ng-content>
+  </div>
+</div>

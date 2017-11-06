@@ -1,0 +1,18 @@
+.map-component {
+  width: inherit;
+  height: inherit;
+
+  .agm-map-container-inner {
+    width: inherit;
+    height: inherit;
+  }
+  .agm-map-content {
+    display:none;
+  }
+  .overlay {
+    height: inherit;
+    width: 100%;
+    z-index: 9999;
+    position: absolute;
+  }
+}
