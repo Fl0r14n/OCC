@@ -15,10 +15,6 @@ export class ForgottenPasswordTokensService extends RestService {
   }
 
   resetForgottenPasswordToken(userId: string): Observable<void> {
-    return this.post<void>(this.toHttpParams({
-      userId: userId
-    }), null, {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
+    return this.post<void>(this.toHttpParams({userId: userId}));
   }
 }

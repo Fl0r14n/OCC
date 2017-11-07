@@ -51,7 +51,7 @@ export class StoresService extends RestService {
   }
 
   getStores(queryParams?: StoreQueryParams): Observable<StoreFinderSearchPageWsDTO> {
-    return this.query<StoreFinderSearchPageWsDTO>(queryParams);
+    return this.query<StoreFinderSearchPageWsDTO>({params: queryParams});
   }
 
   getStore(storeId?: string): Observable<PointOfServiceWsDTO> {

@@ -115,15 +115,15 @@ export class ProductsService extends RestService {
   }
 
   getExpressUpdate(queryParams?: ExpressUpdateQueryParams): Observable<ProductExpressUpdateElementListWsDTO> {
-    return this.get<ProductExpressUpdateElementListWsDTO>(`expressupdate`, queryParams);
+    return this.get<ProductExpressUpdateElementListWsDTO>(`expressupdate`, {params: queryParams});
   }
 
   search(queryParams?: SearchQueryParams): Observable<ProductSearchPageWsDTO> {
-    return this.get<ProductSearchPageWsDTO>(`search`, queryParams);
+    return this.get<ProductSearchPageWsDTO>(`search`, {params: queryParams});
   }
 
   suggestions(queryParams?: SuggestionQueryParams): Observable<SuggestionListWsDTO> {
-    return this.get<SuggestionListWsDTO>(`search`, queryParams);
+    return this.get<SuggestionListWsDTO>(`search`, {params: queryParams});
   }
 
   getProduct(productCode?: string): Observable<ProductWsDTO> {
@@ -139,11 +139,11 @@ export class ProductsService extends RestService {
   }
 
   addProductReview(productCode?: string, review?: ReviewWsDTO): Observable<ReviewWsDTO> {
-    return this.post<ReviewWsDTO>(`${productCode}/reviews`, review);
+    return this.postAt<ReviewWsDTO>(`${productCode}/reviews`, review);
   }
 
   getProductStocks(productCode?: string, queryParams?: ProductStockQueryParams): Observable<StoreFinderStockSearchPageWsDTO> {
-    return this.get<StoreFinderStockSearchPageWsDTO>(`${productCode}/stock`, queryParams);
+    return this.get<StoreFinderStockSearchPageWsDTO>(`${productCode}/stock`, {params: queryParams});
   }
 
   getProductStock(productCode?: string, storeName?: string): Observable<StockWsDTO> {

@@ -23,7 +23,7 @@ export class PromotionsService extends RestService {
   }
 
   getPromotions(queryParams?: PromotionQueryParams): Observable<PromotionListWsDTO> {
-    return this.query<PromotionListWsDTO>(queryParams);
+    return this.query<PromotionListWsDTO>({params: queryParams});
   }
 
   getPromotion(code?: string): Observable<PromotionWsDTO> {

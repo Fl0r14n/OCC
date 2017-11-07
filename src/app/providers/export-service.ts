@@ -21,6 +21,6 @@ export class ExportService extends RestService {
   }
 
   getProducts(queryParams?: ExportQueryParams): Observable<ProductListWsDTO> {
-    return this.get(`products`, queryParams);
+    return this.get(`products`, {params: queryParams});
   }
 }

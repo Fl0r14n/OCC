@@ -635,3 +635,81 @@ export interface TitleListWsDTO {
 export interface MemberListWsDTO {
   members?: PrincipalWsDTO[]
 }
+
+export interface UserSignUpWsDTO {
+  uid?: string
+  firstName?: string
+  lastName?: string
+  titleCode?: string
+  password?: string
+}
+
+export interface AddressListWsDTO {
+  addresses?: AddressWsDTO[]
+}
+
+export interface ErrorWsDTO {
+  type?: string
+  reason?: string
+  message?: string
+  subjectType?: string
+  subject?: string
+  language?: string
+  position?: number
+  exceptionMessage?: string
+}
+
+export interface ErrorListWsDTO {
+  errors?: ErrorWsDTO[]
+}
+
+export interface AddressValidationWsDTO {
+  errors?: ErrorListWsDTO
+  decision?: string
+  suggestedAddresses?: AddressWsDTO[]
+}
+
+export interface AbstractOrderWsDTO {
+  code?: string
+  net?: boolean
+  totalPriceWithTax?: PriceWsDTO
+  totalPrice?: PriceWsDTO
+  totalTax?: PriceWsDTO
+  subTotal?: PriceWsDTO
+  deliveryCost?: PriceWsDTO
+  entries?: OrderEntryWsDTO[]
+  totalItems?: number
+  deliveryMode?: DeliveryModeWsDTO
+  deliveryAddress?: AddressWsDTO
+  paymentInfo?: PaymentDetailsWsDTO
+  appliedOrderPromotions?: PromotionResultWsDTO[]
+  appliedProductPromotions?: PromotionResultWsDTO[]
+  productDiscounts?: PriceWsDTO
+  orderDiscounts?: PriceWsDTO
+  totalDiscounts?: PriceWsDTO
+  site?: string
+  store?: string
+  guid?: string
+  calculated?: boolean
+  appliedVouchers?: VoucherWsDTO[]
+  user?: PrincipalWsDTO
+  pickupOrderGroups?: PickupOrderEntryGroupWsDTO[]
+  deliveryOrderGroups?: DeliveryOrderEntryGroupWsDTO[]
+  pickupItemsQuantity?: number
+  deliveryItemsQuantity?: number
+}
+
+export interface CartWsDTO extends AbstractOrderWsDTO {
+  totalUnitCount?: number
+  potentialOrderPromotions?: PromotionResultWsDTO[]
+  potentialProductPromotions?: PromotionResultWsDTO[]
+  name?: string
+  description?: string
+  expirationTime?: Date
+  saveTime?: Date
+  savedBy?: PrincipalWsDTO
+}
+
+export interface CartListWsDTO {
+  carts?: CartWsDTO[]
+}

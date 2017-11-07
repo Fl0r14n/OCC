@@ -31,7 +31,7 @@ export class CustomerGroupsService extends RestService {
     return this.put(`${groupId}/members`, members);
   }
 
-  removeUserFromGroup(groupId: string, userId: string): Observable<void> {
+  delUserFromGroup(groupId: string, userId: string): Observable<void> {
     return this.delete(`${groupId}/members/${userId}`);
   }
 }

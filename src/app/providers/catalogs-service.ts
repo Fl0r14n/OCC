@@ -41,6 +41,6 @@ export class CatalogsService extends RestService {
                        catalogVersionId: string,
                        categoryId: string,
                        queryParams?: CatalogsQueryParams): Observable<CategoryHierarchyWsDTO> {
-    return this.get(`${catalogId}/${catalogVersionId}/categories/${categoryId}`, queryParams);
+    return this.get(`${catalogId}/${catalogVersionId}/categories/${categoryId}`, {params: queryParams});
   }
 }

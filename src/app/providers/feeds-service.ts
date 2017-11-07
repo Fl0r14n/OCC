@@ -20,6 +20,6 @@ export class FeedsService extends RestService {
   }
 
   getOrderStatusUpdate(queryParams?: OrderStatusUpdateQueryParams): Observable<OrderStatusUpdateElementListWsDTO> {
-    return this.get<OrderStatusUpdateElementListWsDTO>(`orders/statusfeed`, queryParams);
+    return this.get<OrderStatusUpdateElementListWsDTO>(`orders/statusfeed`, {params: queryParams});
   }
 }
