@@ -15,6 +15,10 @@ export class CardTypesService extends RestService {
     return `${this.basePath}/cardtypes`;
   }
 
+  /**
+   * Lists supported payment card types.
+   * @returns {Observable<CardTypeListWsDTO>}
+   */
   getCardTypes(): Observable<CardTypeListWsDTO> {
     return this.query<CardTypeListWsDTO>();
   }

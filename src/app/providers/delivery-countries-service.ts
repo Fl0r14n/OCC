@@ -15,6 +15,10 @@ export class DeliveryCountriesService extends RestService {
     return `${this.basePath}/deliverycountries`;
   }
 
+  /**
+   * Lists all supported delivery countries for the current store. The list is sorted alphabetically.
+   * @returns {Observable<CountryListWsDTO>}
+   */
   getDeliveryCountries(): Observable<CountryListWsDTO> {
     return this.query<CountryListWsDTO>();
   }

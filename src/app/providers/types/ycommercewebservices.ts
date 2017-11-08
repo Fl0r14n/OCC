@@ -632,10 +632,6 @@ export interface TitleListWsDTO {
   titles?: TitleWsDTO[]
 }
 
-export interface MemberListWsDTO {
-  members?: PrincipalWsDTO[]
-}
-
 export interface UserSignUpWsDTO {
   uid?: string
   firstName?: string

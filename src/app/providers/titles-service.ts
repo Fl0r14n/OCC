@@ -15,6 +15,10 @@ export class TitlesService extends RestService {
     return `${this.basePath}/titles`;
   }
 
+  /**
+   * Lists all localized titles.
+   * @returns {Observable<TitleListWsDTO>}
+   */
   getTitles(): Observable<TitleListWsDTO> {
     return this.query<TitleListWsDTO>();
   }

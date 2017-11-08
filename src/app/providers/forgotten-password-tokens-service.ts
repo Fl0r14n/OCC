@@ -14,6 +14,11 @@ export class ForgottenPasswordTokensService extends RestService {
     return `${this.basePath}/forgottenpasswordtokens`;
   }
 
+  /**
+   * Generates a token to restore customer's forgotten password.
+   * @param {string} userId Customer's user id. Customer user id is case insensitive.
+   * @returns {Observable<void>}
+   */
   resetForgottenPasswordToken(userId: string): Observable<void> {
     return this.post<void>(this.toHttpParams({userId: userId}));
   }

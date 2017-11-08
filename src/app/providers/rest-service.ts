@@ -83,6 +83,11 @@ export abstract class RestService {
     return this.http.put<void>(`${this.getEndpoint()}/${id}`, body, this.toRequestOptions(_options));
   }
 
+  protected patch(id: number | string, body: any, options?: RequestOptions): Observable<void> {
+    let _options = this.fixHeaders(body, options);
+    return this.http.patch<void>(`${this.getEndpoint()}/${id}`, body, this.toRequestOptions(_options));
+  }
+
   protected delete(id: number | string): Observable<void> {
     return this.http.delete<void>(`${this.getEndpoint()}/${id}`)
   }

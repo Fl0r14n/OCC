@@ -15,6 +15,12 @@ export class OrdersService extends RestService {
     return `${this.basePath}/orders`;
   }
 
+  /**
+   * Returns details of a specific order based on order GUID (Globally Unique Identifier) or order CODE.<br/>
+   * The response contains a detailed order information.
+   * @param {string} code Order GUID (Globally Unique Identifier) or order CODE
+   * @returns {Observable<OrderWsDTO>}
+   */
   getOrder(code: string): Observable<OrderWsDTO> {
     return this.get<OrderWsDTO>(code);
   }

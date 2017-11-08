@@ -15,6 +15,11 @@ export class CurrenciesService extends RestService {
     return `${this.basePath}/currencies`;
   }
 
+  /**
+   * Lists all available currencies (all usable currencies for the current store).<br/>
+   * If the list of currencies for stores is empty, a list of all currencies available in the system is returned.
+   * @returns {Observable<CurrencyListWsDTO>}
+   */
   getCurrencies(): Observable<CurrencyListWsDTO> {
     return this.query<CurrencyListWsDTO>();
   }
