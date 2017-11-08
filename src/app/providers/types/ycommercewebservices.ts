@@ -717,3 +717,43 @@ export interface SaveCartResultWsDTO {
 export interface DeliveryModeListWsDTO {
   deliveryModes?: DeliveryModeWsDTO[]
 }
+
+export interface OrderEntryListWsDTO {
+  orderEntries?: OrderEntryWsDTO[]
+}
+
+export interface CartModificationWsDTO {
+  statusCode?: string
+  quantityAdded?: number
+  quantity?: number
+  entry?: OrderEntryWsDTO
+  deliveryModeChanged?: boolean
+  statusMessage?: string
+}
+
+export interface PromotionResultListWsDTO {
+  promotions?: PromotionResultWsDTO[]
+}
+
+export interface VoucherListWsDTO {
+  vouchers?: VoucherWsDTO[]
+}
+
+export interface OrderHistoryWsDTO {
+  code?: string
+  status?: string
+  statusDisplay?: string
+  placed?: Date
+  guid?: string
+  total?: PriceWsDTO
+}
+
+export interface OrderHistoryListWsDTO {
+  orders?: OrderHistoryWsDTO[]
+  sorts?: SortWsDTO[]
+  pagination?: PaginationWsDTO
+}
+
+export interface PaymentDetailsListWsDTO {
+  payments?: PaymentDetailsWsDTO[]
+}
