@@ -713,3 +713,11 @@ export interface CartWsDTO extends AbstractOrderWsDTO {
 export interface CartListWsDTO {
   carts?: CartWsDTO[]
 }
+
+export interface SaveCartResultWsDTO {
+  savedCartData?: CartWsDTO
+}
+
+export interface DeliveryModeListWsDTO {
+  deliveryModes?: DeliveryModeWsDTO[]
+}
