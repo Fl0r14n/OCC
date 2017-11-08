@@ -1,8 +1,8 @@
 import {NgModule, ApplicationRef} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {HttpModule} from '@angular/http';
 import {FormsModule} from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {OAuthModule} from 'angular-oauth2-oidc';
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app.routing';
 import {removeNgStyles, createNewHosts} from '@angularclass/hmr';
@@ -37,6 +37,7 @@ export function createTranslateLoader(http: HttpClient) {
     AgmCoreModule.forRoot({
       apiKey: GOOGLE_MAPS_KEY
     }),
+    OAuthModule.forRoot(),
     ComponentsModule,
     PagesModule,
     ProvidersModule
