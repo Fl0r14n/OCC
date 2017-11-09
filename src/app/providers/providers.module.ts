@@ -15,12 +15,9 @@ import {StoresService} from './stores-service';
 import {TitlesService} from './titles-service';
 import {UsersService} from './users-service';
 import {VoucherService} from './voucher-service';
-import {AuthentificationService} from './authentification-service';
 
 @NgModule({
   providers: [
-    AuthentificationService,
-    TokenInterceptor,
     CardTypesService,
     CatalogsService,
     CurrenciesService,

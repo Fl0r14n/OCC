@@ -11,6 +11,8 @@ import {FooterComponent} from './footer/footer.component';
 import {HeaderComponent} from './header/header.component';
 import {MapComponent} from './map/map.component';
 import {LanguageComponent} from './language/language.component';
+import {LoginComponent} from './login/login.component';
+import {OAuthModule} from '../oauth/oauth';
 
 
 @NgModule({
@@ -23,18 +25,21 @@ import {LanguageComponent} from './language/language.component';
     AgmCoreModule,
     ScrollCollapseModule,
     AnimationsModule,
+    OAuthModule,
   ],
   declarations: [
     MapComponent,
     FooterComponent,
     HeaderComponent,
-    LanguageComponent
+    LanguageComponent,
+    LoginComponent
   ],
   exports: [
     MapComponent,
     FooterComponent,
     HeaderComponent,
-    LanguageComponent
+    LanguageComponent,
+    LoginComponent
   ]
 })
 export class ComponentsModule {

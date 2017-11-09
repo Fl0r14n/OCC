@@ -1,0 +1,19 @@
+.language-component {
+
+  li.nav-item {
+    &:not(:last-child){
+      &:after {
+        content: '|';
+        padding: 0 0.5rem 0 0.3rem;
+      }
+    }
+  }
+  a {
+    color: #505eaf;
+
+    &.active {
+      color: #2B4B87;
+      font-weight: bold;
+    }
+  }
+}
