@@ -1,6 +1,6 @@
 import {Component, Injectable, Input, NgModule} from '@angular/core';
 import {HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
-import {Router} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from '../app.routing';
@@ -41,13 +41,15 @@ export class OAuthService extends DefaultOAuthConfig implements HttpInterceptor 
   status = OAuthEvent.LOGOUT;
   token: {
     access_token?: string
+    token_type?: string
+    state?: string
+    error?: string
     expires_in?: string
     expires_at?: Date
   };
 
   constructor(protected http: HttpClient, protected router: Router) {
     super();
-    console.log(this.storage);
     const tokenStr = this.storage['token'];
     if (tokenStr) {
       const token = JSON.parse(tokenStr);
@@ -56,18 +58,15 @@ export class OAuthService extends DefaultOAuthConfig implements HttpInterceptor 
       }
     }
     this.router.events.subscribe((event) => {
-      console.log(event);
-      if (location.hash.match('#access_token=')) {
-        const hash = location.hash.substr(1);
+      if (event instanceof NavigationEnd && event.url.match('/#access_token=')) {
+        const hash = event.url.substr(2);
         const params = this.parseOauthUri(hash);
         if (params) {
           this.cleanLocationHash();
           this.setToken(params);
-          // TODO throw events
         }
-        location.replace('/');
       }
-    })
+    });
   }
 
   configure(oauthConfig: OAuthConfig) {
@@ -108,11 +107,16 @@ export class OAuthService extends DefaultOAuthConfig implements HttpInterceptor 
   }
 
   private setToken(params) {
+    if (params.error) {
+      this.status = OAuthEvent.DENIED;
+      return;
+    }
     this.token = this.token || {};
     Object.assign(this.token, params);
     this.setExpires();
     this.storage['token'] = JSON.stringify(this.token);
     this.setExpiredAtEvent();
+    this.status = OAuthEvent.AUTHORIZED;
   }
 
   private setExpires() {
@@ -155,7 +159,7 @@ export class OAuthService extends DefaultOAuthConfig implements HttpInterceptor 
 
   private cleanLocationHash() {
     let curHash = location.hash;
-    const haskKeys = ['access_token', 'token_type', 'expires_in', 'scope', 'state', 'error', 'error_description'];
+    const haskKeys = ['#access_token', 'token_type', 'expires_in', 'scope', 'state', 'error', 'error_description'];
     haskKeys.forEach((hashKey) => {
       const re = new RegExp('&' + hashKey + '(=[^&]*)?|^' + hashKey + '(=[^&]*)?&?');
       curHash = curHash.replace(re, '');
