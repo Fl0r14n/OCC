@@ -1,0 +1,13 @@
+<div class="form-group search-component">
+  <ng-template #rt let-r="result" let-t="term">
+    <my-product-inline [product]="r"></my-product-inline>
+  </ng-template>
+
+  <input type="text" class="form-control" placeholder="Product search"
+         [class.is-invalid]="searchFailed" [(ngModel)]="model"
+         [ngbTypeahead]="search"
+         [inputFormatter]="formatter"
+         [resultTemplate]="rt">
+  <span *ngIf="searching">searching...</span>
+  <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
+</div>

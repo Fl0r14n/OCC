@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {AgmCoreModule} from '@agm/core';
@@ -13,11 +14,14 @@ import {MapComponent} from './map/map.component';
 import {LanguageComponent} from './language/language.component';
 import {LoginComponent} from './login/login.component';
 import {OAuthModule} from '../oauth/oauth';
+import {SearchComponent} from './search/search.component';
+import {ProductInlineComponent} from './product-inline/product-inline.component';
 
 
 @NgModule({
   imports: [
     BrowserModule,
+    FormsModule,
     AppRoutingModule,
     TranslateModule,
     NgbModule,
@@ -32,14 +36,18 @@ import {OAuthModule} from '../oauth/oauth';
     FooterComponent,
     HeaderComponent,
     LanguageComponent,
-    LoginComponent
+    LoginComponent,
+    SearchComponent,
+    ProductInlineComponent
   ],
   exports: [
     MapComponent,
     FooterComponent,
     HeaderComponent,
     LanguageComponent,
-    LoginComponent
+    LoginComponent,
+    SearchComponent,
+    ProductInlineComponent
   ]
 })
 export class ComponentsModule {

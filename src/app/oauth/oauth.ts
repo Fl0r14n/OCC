@@ -1,5 +1,7 @@
-import {Component, Injectable, Input, NgModule} from '@angular/core';
-import {HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {Component, Injectable, Injector, Input, NgModule} from '@angular/core';
+import {
+  HTTP_INTERCEPTORS, HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
+} from '@angular/common/http';
 import {NavigationEnd, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {BrowserModule} from '@angular/platform-browser';
@@ -36,7 +38,7 @@ export class DefaultOAuthConfig implements OAuthConfig {
 }
 
 @Injectable()
-export class OAuthService extends DefaultOAuthConfig implements HttpInterceptor {
+export class OAuthService extends DefaultOAuthConfig {
 
   status = OAuthEvent.LOGOUT;
   token: {
@@ -93,17 +95,6 @@ export class OAuthService extends DefaultOAuthConfig implements HttpInterceptor 
   profile(): Observable<any> {
     // TODO
     return this.http.get(this.profileUri);
-  }
-
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (this.token && this.token.access_token) {
-      req = req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${this.token}`
-        }
-      });
-    }
-    return next.handle(req);
   }
 
   private setToken(params) {
@@ -165,6 +156,27 @@ export class OAuthService extends DefaultOAuthConfig implements HttpInterceptor 
       curHash = curHash.replace(re, '');
     });
     location.hash = curHash;
+  }
+}
+
+@Injectable()
+export class OAuthInterceptor implements HttpInterceptor {
+
+  private oauth: OAuthService;
+
+  constructor(injector: Injector) {
+    setTimeout(() => this.oauth = injector.get(OAuthService));
+  }
+
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    if (this.oauth && this.oauth.token && this.oauth.token.access_token) {
+      req = req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${this.oauth.token.access_token}`
+        }
+      });
+    }
+    return next.handle(req);
   }
 }
 
@@ -233,6 +245,11 @@ export class OAuthComponent {
   ],
   providers: [
     OAuthService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: OAuthInterceptor,
+      multi: true,
+    }
   ]
 })
 export class OAuthModule {

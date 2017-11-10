@@ -13,7 +13,7 @@ interface HTTPClientRequestOptions {
 
 export abstract class RestService {
 
-  protected basePath = '/rest/v2/electronics';
+  protected basePath = 'https://localhost:9002/rest/v2/electronics';
 
   abstract getEndpoint(): string;
 
