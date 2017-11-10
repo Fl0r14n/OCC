@@ -14,24 +14,38 @@ export enum OAuthEvent {
 }
 
 export interface OAuthConfig {
-  authorizePath: URL | string
-  tokenPath?: URL | string
-  responseType?: string
+  clientId: string
   redirectUri?: URL | string
   profileUri?: URL | string
-  clientId: string
   scope?: string
   state?: string
   storage?: Storage
 }
 
-export class DefaultOAuthConfig implements OAuthConfig {
-  authorizePath = 'http://localhost/oauth/authorize';
-  tokenPath = 'http://localhost/oauth/token';
+export interface ResourceOAuthConfig extends OAuthConfig {
+  tokenPath: URL | string
+  username: string
+  password: string
+  clientSecret: string
+  grantType?: string
+}
+
+export interface ImplicitOAuthConfig extends OAuthConfig {
+  authorizePath: URL | string
+  responseType?: string
+}
+
+export class DefaultOAuthConfig implements ResourceOAuthConfig, ImplicitOAuthConfig {
+  authorizePath = null;
+  tokenPath = null;
   profileUri = null;
-  responseType = 'token';
   redirectUri = window.location.origin;
   clientId = 'client';
+  clientSecret = '';
+  grantType = 'password';
+  username = '';
+  password = '';
+  responseType = 'token';
   scope = '';
   state = '';
   storage = sessionStorage;
@@ -45,16 +59,15 @@ export class OAuthService extends DefaultOAuthConfig {
   profile: any;
   token: {
     access_token?: string
+    refresh_token?: string
     token_type?: string
     state?: string
     error?: string
     expires_in?: Number
-    expires_at?: Date
   };
 
   constructor(protected http: HttpClient, protected router: Router) {
     super();
-    this.init();
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd && event.url.match('/#access_token=')) {
         const hash = event.url.substr(2);
@@ -77,16 +90,26 @@ export class OAuthService extends DefaultOAuthConfig {
     }
   }
 
-  configure(oauthConfig: OAuthConfig) {
+  configure(oauthConfig: ResourceOAuthConfig | ImplicitOAuthConfig) {
     Object.assign(this, oauthConfig);
     this.init();
   }
 
   login() {
-    const appendChar = this.authorizePath.indexOf('?') === -1 ? '?' : '&';
-    const authUrl = `${this.authorizePath}${appendChar}response_type=${this.responseType}&client_id=${this.clientId
-      }&redirect_uri=${this.redirectUri}&scope=${this.scope}&state=${this.state}`;
-    location.replace(authUrl);
+    if (this.authorizePath) {
+      console.log('Authorize');
+      const appendChar = this.authorizePath.indexOf('?') === -1 ? '?' : '&';
+      const authUrl = `${this.authorizePath}${appendChar}response_type=${this.responseType}&client_id=${this.clientId
+        }&redirect_uri=${this.redirectUri}&scope=${this.scope}&state=${this.state}`;
+      location.replace(authUrl);
+    }
+    if (this.tokenPath) {
+      console.log('Tokenize');
+      const appendChar = this.tokenPath.indexOf('?') === -1 ? '?' : '&';
+      const authUrl = `${this.tokenPath}${appendChar}client_id=${this.clientId}&client_secret=${this.clientSecret
+        }&grant_type=${this.grantType}&username=${this.username}&password=${this.password}`;
+      this.http.post(authUrl, null).subscribe(params => this.setToken(params));
+    }
   }
 
   logout() {
@@ -106,7 +129,6 @@ export class OAuthService extends DefaultOAuthConfig {
     this.status = OAuthEvent.AUTHORIZED;
     this.startExpirationTimer();
     if (this.profileUri) {
-      console.log('Profile');
       this.http.get(this.profileUri, {
         headers: {
           Authorization: `Bearer ${this.token.access_token}`
@@ -119,7 +141,14 @@ export class OAuthService extends DefaultOAuthConfig {
     clearTimeout(this.timer);
     if (this.token.expires_in) {
       this.timer = setTimeout(() => {
-        this.logout();
+        if (this.tokenPath && this.token.refresh_token) {
+          const appendChar = this.tokenPath.indexOf('?') === -1 ? '?' : '&';
+          const authUrl = `${this.tokenPath}${appendChar}refresh_token=${this.token.refresh_token
+            }&client_id=${this.clientId}&client_secret=${this.clientSecret}&redirect_uri=&grant_type=refresh_token`;
+          this.http.post(authUrl, null).subscribe(params => this.setToken(params));
+        } else {
+          this.logout();
+        }
       }, Number(this.token.expires_in) * 1000);
     }
   }
@@ -158,7 +187,6 @@ export class OAuthInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (this.oauth && this.oauth.token && this.oauth.token.access_token) {
-      console.log('Add Authorization header');
       req = req.clone({
         setHeaders: {
           Authorization: `Bearer ${this.oauth.token.access_token}`
@@ -170,7 +198,7 @@ export class OAuthInterceptor implements HttpInterceptor {
 }
 
 @Component({
-  selector: 'my-oauth',
+  selector: 'my-implicit-oauth',
   template: `
     <a href="#" class="oauth {{className}}">
       <span *ngIf="isLogout()" (click)="oauth.login()">{{i18nLogin}}</span>
@@ -179,7 +207,7 @@ export class OAuthInterceptor implements HttpInterceptor {
     </a>
   `
 })
-export class OAuthComponent {
+export class ImplicitOAuthComponent {
 
   @Input()
   className: string;
@@ -196,7 +224,7 @@ export class OAuthComponent {
   }
 
   @Input()
-  set oauthConfig(oauthConfig: OAuthConfig) {
+  set oauthConfig(oauthConfig: ImplicitOAuthConfig) {
     this.oauth.configure(oauthConfig);
   }
 
@@ -220,16 +248,28 @@ export class OAuthComponent {
   }
 }
 
+@Component({
+  selector: 'my-resource-oauth',
+  template: `
+    // TODO
+  `
+})
+export class ResourceOAuthComponent {
+  // TODO
+}
+
 @NgModule({
   imports: [
     BrowserModule,
     AppRoutingModule
   ],
   declarations: [
-    OAuthComponent,
+    ImplicitOAuthComponent,
+    ResourceOAuthComponent
   ],
   exports: [
-    OAuthComponent
+    ImplicitOAuthComponent,
+    ResourceOAuthComponent
   ],
   providers: [
     OAuthService,
