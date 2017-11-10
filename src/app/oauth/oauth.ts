@@ -9,17 +9,16 @@ import {AppRoutingModule} from '../app.routing';
 
 export enum OAuthEvent {
   LOGOUT = 'oauth:logout',
-  EXPIRED = 'oauth:expired',
   AUTHORIZED = 'oauth:autorized',
   DENIED = 'oauth:denied',
-  PROFILE = 'oauth:profile'
 }
 
 export interface OAuthConfig {
-  authorizePath: string
+  authorizePath: URL | string
+  tokenPath?: URL | string
   responseType?: string
-  redirectUri?: string
-  profileUri?: string
+  redirectUri?: URL | string
+  profileUri?: URL | string
   clientId: string
   scope?: string
   state?: string
@@ -28,9 +27,10 @@ export interface OAuthConfig {
 
 export class DefaultOAuthConfig implements OAuthConfig {
   authorizePath = 'http://localhost/oauth/authorize';
+  tokenPath = 'http://localhost/oauth/token';
+  profileUri = null;
   responseType = 'token';
   redirectUri = window.location.origin;
-  profileUri = `http://localhost/oauth/profile`;
   clientId = 'client';
   scope = '';
   state = '';
@@ -41,24 +41,20 @@ export class DefaultOAuthConfig implements OAuthConfig {
 export class OAuthService extends DefaultOAuthConfig {
 
   status = OAuthEvent.LOGOUT;
+  timer: any;
+  profile: any;
   token: {
     access_token?: string
     token_type?: string
     state?: string
     error?: string
-    expires_in?: string
+    expires_in?: Number
     expires_at?: Date
   };
 
   constructor(protected http: HttpClient, protected router: Router) {
     super();
-    const tokenStr = this.storage['token'];
-    if (tokenStr) {
-      const token = JSON.parse(tokenStr);
-      if (token && token.access_token) {
-        this.setToken(token);
-      }
-    }
+    this.init();
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd && event.url.match('/#access_token=')) {
         const hash = event.url.substr(2);
@@ -71,8 +67,19 @@ export class OAuthService extends DefaultOAuthConfig {
     });
   }
 
+  init() {
+    const tokenStr = this.storage['token'];
+    if (tokenStr) {
+      const token = JSON.parse(tokenStr);
+      if (token && token.access_token) {
+        this.setToken(token);
+      }
+    }
+  }
+
   configure(oauthConfig: OAuthConfig) {
     Object.assign(this, oauthConfig);
+    this.init();
   }
 
   login() {
@@ -88,15 +95,6 @@ export class OAuthService extends DefaultOAuthConfig {
     this.status = OAuthEvent.LOGOUT;
   }
 
-  expired() {
-
-  }
-
-  profile(): Observable<any> {
-    // TODO
-    return this.http.get(this.profileUri);
-  }
-
   private setToken(params) {
     if (params.error) {
       this.status = OAuthEvent.DENIED;
@@ -104,35 +102,25 @@ export class OAuthService extends DefaultOAuthConfig {
     }
     this.token = this.token || {};
     Object.assign(this.token, params);
-    this.setExpires();
     this.storage['token'] = JSON.stringify(this.token);
-    this.setExpiredAtEvent();
     this.status = OAuthEvent.AUTHORIZED;
-  }
-
-  private setExpires() {
-    if (!this.token) {
-      return;
-    }
-    if (typeof (this.token.expires_in) !== 'undefined' && this.token.expires_in !== null) {
-      let expires_at = new Date();
-      // 60 seconds less to secure browser and response latency
-      expires_at.setSeconds(expires_at.getSeconds() + Number(this.token.expires_in) - 60);
-      this.token.expires_at = expires_at;
-    } else {
-      this.token.expires_at = null;
+    this.startExpirationTimer();
+    if (this.profileUri) {
+      console.log('Profile');
+      this.http.get(this.profileUri, {
+        headers: {
+          Authorization: `Bearer ${this.token.access_token}`
+        }
+      }).subscribe(profile => this.profile = profile);
     }
   }
 
-  private setExpiredAtEvent() {
-    if (typeof (this.token.expires_at) === 'undefined' || this.token.expires_at === null) {
-      return;
-    }
-    const time = Number(new Date(this.token.expires_at)) - Number(new Date());
-    if (time) {
-      setTimeout(() => {
-        this.status = OAuthEvent.EXPIRED;
-      }, time);
+  private startExpirationTimer() {
+    clearTimeout(this.timer);
+    if (this.token.expires_in) {
+      this.timer = setTimeout(() => {
+        this.logout();
+      }, Number(this.token.expires_in) * 1000);
     }
   }
 
@@ -170,6 +158,7 @@ export class OAuthInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (this.oauth && this.oauth.token && this.oauth.token.access_token) {
+      console.log('Add Authorization header');
       req = req.clone({
         setHeaders: {
           Authorization: `Bearer ${this.oauth.token.access_token}`
@@ -227,8 +216,7 @@ export class OAuthComponent {
   }
 
   getEmail() {
-    // TODO
-    return 'Test';
+    return this.oauth.profile ? this.oauth.profile.name : '';
   }
 }
 

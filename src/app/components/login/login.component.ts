@@ -8,7 +8,8 @@ import {OAuthConfig} from '../../oauth/oauth';
 })
 export class LoginComponent implements OAuthConfig {
   authorizePath = 'http://localhost:9001/authorizationserver/oauth/authorize';
-  logoutUrl = 'http://localhost:9001/authorizationserver/oauth/logout';
+  tokenPath = 'http://localhost:9001/authorizationserver/oauth/token';
+  profileUri = 'http://localhost:9001/rest/v2/electronics/users/current';
   redirectUri = window.location.origin;
   responseType = 'token';
   clientId = 'client-side';
