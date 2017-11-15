@@ -49,7 +49,7 @@ export class UsersService extends RestService {
    * 'anonymous' for anonymous user
    * @returns {Observable<UserWsDTO>}
    */
-  getUser(userId: UserIdChoice): Observable<UserWsDTO> {
+  getUser(userId: UserIdChoice | string): Observable<UserWsDTO> {
     return this.get<UserWsDTO>(userId);
   }
 
@@ -59,7 +59,7 @@ export class UsersService extends RestService {
    * @param {UserSignUpWsDTO} user
    * @returns {Observable<void>}
    */
-  setUser(userId: UserIdChoice, user: UserSignUpWsDTO): Observable<void> {
+  setUser(userId: UserIdChoice | string, user: UserSignUpWsDTO): Observable<void> {
     return this.patch(userId, user);
   }
 
@@ -68,7 +68,7 @@ export class UsersService extends RestService {
    * @param {UserIdChoice} userId
    * @returns {Observable<void>}
    */
-  delUser(userId: UserIdChoice): Observable<void> {
+  delUser(userId: UserIdChoice | string): Observable<void> {
     return this.delete(userId);
   }
 
@@ -77,7 +77,7 @@ export class UsersService extends RestService {
    * @param {UserIdChoice} userId
    * @returns {Observable<AddressListWsDTO>}
    */
-  getAddresses(userId: UserIdChoice): Observable<AddressListWsDTO> {
+  getAddresses(userId: UserIdChoice | string): Observable<AddressListWsDTO> {
     return this.get<AddressListWsDTO>(`${userId}/addresses`);
   }
 
@@ -87,7 +87,7 @@ export class UsersService extends RestService {
    * @param {AddressWsDTO} address
    * @returns {Observable<void>}
    */
-  addAddress(userId: UserIdChoice, address: AddressWsDTO): Observable<void> {
+  addAddress(userId: UserIdChoice | string, address: AddressWsDTO): Observable<void> {
     return this.postAt(`${userId}/addresses`, address);
   }
 
@@ -97,7 +97,7 @@ export class UsersService extends RestService {
    * @param {AddressWsDTO} address
    * @returns {Observable<AddressValidationWsDTO>}
    */
-  verifyAddress(userId: UserIdChoice, address: AddressWsDTO): Observable<AddressValidationWsDTO> {
+  verifyAddress(userId: UserIdChoice | string, address: AddressWsDTO): Observable<AddressValidationWsDTO> {
     return this.postAt(`${userId}/addresses/verification`, address);
   }
 
@@ -107,7 +107,7 @@ export class UsersService extends RestService {
    * @param {string} addressId
    * @returns {Observable<AddressWsDTO>}
    */
-  getAddress(userId: UserIdChoice, addressId: string): Observable<AddressWsDTO> {
+  getAddress(userId: UserIdChoice | string, addressId: string): Observable<AddressWsDTO> {
     return this.get<AddressWsDTO>(`${userId}/addresses/${addressId}`);
   }
 
@@ -118,7 +118,7 @@ export class UsersService extends RestService {
    * @param {AddressWsDTO} address
    * @returns {Observable<void>}
    */
-  setAddress(userId: UserIdChoice, addressId: string, address: AddressWsDTO): Observable<void> {
+  setAddress(userId: UserIdChoice | string, addressId: string, address: AddressWsDTO): Observable<void> {
     return this.patch(`${userId}/addresses/${addressId}`, address);
   }
 
@@ -128,7 +128,7 @@ export class UsersService extends RestService {
    * @param {string} addressId
    * @returns {Observable<void>}
    */
-  delAddress(userId: UserIdChoice, addressId: string): Observable<void> {
+  delAddress(userId: UserIdChoice | string, addressId: string): Observable<void> {
     return this.delete(`${userId}/addresses/${addressId}`);
   }
 
@@ -138,7 +138,7 @@ export class UsersService extends RestService {
    * @param {{savedCartsOnly?: string; pageSize?: number; sort?: string; currentPage?: number}} queryParams
    * @returns {Observable<CartListWsDTO>}
    */
-  getCarts(userId: UserIdChoice, queryParams?: {
+  getCarts(userId: UserIdChoice | string, queryParams?: {
     /**
      * optional parameter. If the parameter is provided and its value is true only saved carts are returned.
      */
@@ -165,7 +165,7 @@ export class UsersService extends RestService {
    * @param {{toMergeCartGuid?: string; oldCartId?: string}} cartOptions
    * @returns {Observable<CartWsDTO>}
    */
-  addCart(userId: UserIdChoice, cartOptions?: {
+  addCart(userId: UserIdChoice | string, cartOptions?: {
     /**
      * User's cart GUID to merge anonymous cart to
      */
@@ -184,7 +184,7 @@ export class UsersService extends RestService {
    * @param {string} cartId
    * @returns {Observable<CartWsDTO>}
    */
-  getCart(userId: UserIdChoice, cartId = 'current'): Observable<CartWsDTO> {
+  getCart(userId: UserIdChoice | string, cartId = 'current'): Observable<CartWsDTO> {
     return this.get<CartWsDTO>(`${userId}/carts/${cartId}`);
   }
 
@@ -194,7 +194,7 @@ export class UsersService extends RestService {
    * @param {string} cartId
    * @returns {Observable<void>}
    */
-  delCart(userId: UserIdChoice, cartId = 'current'): Observable<void> {
+  delCart(userId: UserIdChoice | string, cartId = 'current'): Observable<void> {
     return this.delete(`${userId}/carts/${cartId}`);
   }
 
@@ -205,7 +205,7 @@ export class UsersService extends RestService {
    * @param {AddressWsDTO} address
    * @returns {Observable<AddressWsDTO>}
    */
-  addDeliveryAddress(userId: UserIdChoice, cartId = 'current', address: AddressWsDTO): Observable<AddressWsDTO> {
+  addDeliveryAddress(userId: UserIdChoice | string, cartId = 'current', address: AddressWsDTO): Observable<AddressWsDTO> {
     return this.postAt<AddressWsDTO>(`${userId}/carts/${cartId}/addresses/delivery`, address);
   }
 
@@ -217,7 +217,7 @@ export class UsersService extends RestService {
    * @param {string} addressId
    * @returns {Observable<void>}
    */
-  setDeliveryAddress(userId: UserIdChoice, cartId = 'current', addressId: string): Observable<void> {
+  setDeliveryAddress(userId: UserIdChoice | string, cartId = 'current', addressId: string): Observable<void> {
     return this.put(`${userId}/carts/${cartId}/addresses/delivery`, this.toHttpParams({
       addressId: addressId
     }));
@@ -229,7 +229,7 @@ export class UsersService extends RestService {
    * @param {string} cartId
    * @returns {Observable<void>}
    */
-  delDeliveryAddress(userId: UserIdChoice, cartId = 'current'): Observable<void> {
+  delDeliveryAddress(userId: UserIdChoice | string, cartId = 'current'): Observable<void> {
     return this.delete(`${userId}/carts/${cartId}/addresses/delivery`);
   }
 
@@ -240,7 +240,7 @@ export class UsersService extends RestService {
    * @param {{name?: string; description?: string}} cloneOptions
    * @returns {Observable<SaveCartResultWsDTO>}
    */
-  cloneCart(userId: UserIdChoice, cartId = 'current', cloneOptions: {
+  cloneCart(userId: UserIdChoice | string, cartId = 'current', cloneOptions: {
     /**
      * the name that should be applied to the cloned cart
      */
@@ -260,7 +260,7 @@ export class UsersService extends RestService {
    * @param {string} cartId
    * @returns {Observable<DeliveryModeListWsDTO>}
    */
-  getDeliveryModes(userId: UserIdChoice, cartId = 'current'): Observable<DeliveryModeListWsDTO> {
+  getDeliveryModes(userId: UserIdChoice | string, cartId = 'current'): Observable<DeliveryModeListWsDTO> {
     return this.get<DeliveryModeListWsDTO>(`${userId}/carts/${cartId}/deliverymodes`);
   }
 
@@ -270,7 +270,7 @@ export class UsersService extends RestService {
    * @param {string} cartId
    * @returns {Observable<DeliveryModeWsDTO>}
    */
-  getDeliveryMode(userId: UserIdChoice, cartId = 'current'): Observable<DeliveryModeWsDTO> {
+  getDeliveryMode(userId: UserIdChoice | string, cartId = 'current'): Observable<DeliveryModeWsDTO> {
     return this.get<DeliveryModeWsDTO>(`${userId}/carts/${cartId}/deliverymode`)
   }
 
@@ -281,7 +281,7 @@ export class UsersService extends RestService {
    * @param {string} deliveryModeId
    * @returns {Observable<void>}
    */
-  setDeliveryMode(userId: UserIdChoice, cartId = 'current', deliveryModeId: string): Observable<void> {
+  setDeliveryMode(userId: UserIdChoice | string, cartId = 'current', deliveryModeId: string): Observable<void> {
     return this.put(`${userId}/carts/${cartId}/deliverymode`, this.toHttpParams({deliveryModeId: deliveryModeId}));
   }
 
@@ -291,7 +291,7 @@ export class UsersService extends RestService {
    * @param {string} cartId
    * @returns {Observable<void>}
    */
-  delDeliveryMode(userId: UserIdChoice, cartId = 'current'): Observable<void> {
+  delDeliveryMode(userId: UserIdChoice | string, cartId = 'current'): Observable<void> {
     return this.delete(`${userId}/carts/${cartId}/deliverymode`);
   }
 
@@ -302,7 +302,7 @@ export class UsersService extends RestService {
    * @param {string} email
    * @returns {Observable<void>}
    */
-  setGuestEmail(userId: UserIdChoice, cartId = 'current', email: string): Observable<void> {
+  setGuestEmail(userId: UserIdChoice | string, cartId = 'current', email: string): Observable<void> {
     return this.put(`${userId}/carts/${cartId}/email`, this.toHttpParams({email: email}));
   }
 
@@ -312,7 +312,7 @@ export class UsersService extends RestService {
    * @param {string} cartId
    * @returns {Observable<OrderEntryListWsDTO>}
    */
-  getCartEntries(userId: UserIdChoice, cartId = 'current'): Observable<OrderEntryListWsDTO> {
+  getCartEntries(userId: UserIdChoice | string, cartId = 'current'): Observable<OrderEntryListWsDTO> {
     return this.get<OrderEntryListWsDTO>(`${userId}/carts/${cartId}/entries`);
   }
 
@@ -323,7 +323,7 @@ export class UsersService extends RestService {
    * @param {OrderEntryWsDTO} orderEntry
    * @returns {Observable<CartModificationWsDTO>}
    */
-  addCartEntries(userId: UserIdChoice, cartId = 'current', orderEntry: OrderEntryWsDTO): Observable<CartModificationWsDTO> {
+  addCartEntries(userId: UserIdChoice | string, cartId = 'current', orderEntry: OrderEntryWsDTO): Observable<CartModificationWsDTO> {
     return this.postAt<CartModificationWsDTO>(`${userId}/carts/${cartId}/entries`, orderEntry);
   }
 
@@ -334,7 +334,7 @@ export class UsersService extends RestService {
    * @param {string} entryNumber
    * @returns {Observable<OrderEntryWsDTO>}
    */
-  getCartEntry(userId: UserIdChoice, cartId = 'current', entryNumber: string): Observable<OrderEntryWsDTO> {
+  getCartEntry(userId: UserIdChoice | string, cartId = 'current', entryNumber: string): Observable<OrderEntryWsDTO> {
     return this.get<OrderEntryWsDTO>(`${userId}/carts/${cartId}/entries/${entryNumber}`);
   }
 
@@ -346,7 +346,7 @@ export class UsersService extends RestService {
    * @param {OrderEntryWsDTO} orderEntry
    * @returns {Observable<CartModificationWsDTO>}
    */
-  setCartEntry(userId: UserIdChoice,
+  setCartEntry(userId: UserIdChoice | string,
                cartId = 'current',
                entryNumber: string,
                orderEntry: OrderEntryWsDTO): Observable<CartModificationWsDTO> {
@@ -360,7 +360,7 @@ export class UsersService extends RestService {
    * @param {string} entryNumber
    * @returns {Observable<void>}
    */
-  delCartEntry(userId: UserIdChoice, cartId = 'current', entryNumber: string): Observable<void> {
+  delCartEntry(userId: UserIdChoice | string, cartId = 'current', entryNumber: string): Observable<void> {
     return this.delete(`${userId}/carts/${cartId}/entries/${entryNumber}`);
   }
 
@@ -372,7 +372,7 @@ export class UsersService extends RestService {
    * @param {string} cartId
    * @returns {Observable<SaveCartResultWsDTO>}
    */
-  flagCartForDeletion(userId: UserIdChoice, cartId = 'current'): Observable<SaveCartResultWsDTO> {
+  flagCartForDeletion(userId: UserIdChoice | string, cartId = 'current'): Observable<SaveCartResultWsDTO> {
     return this.patch<SaveCartResultWsDTO>(`${userId}/carts/${cartId}/flagForDeletion`, null);
   }
 
@@ -383,7 +383,7 @@ export class UsersService extends RestService {
    * @param {PaymentDetailsWsDTO} paymentDetails
    * @returns {Observable<PaymentDetailsWsDTO>}
    */
-  addPaymentDetails(userId: UserIdChoice, cartId = 'current', paymentDetails: PaymentDetailsWsDTO): Observable<PaymentDetailsWsDTO> {
+  addPaymentDetails(userId: UserIdChoice | string, cartId = 'current', paymentDetails: PaymentDetailsWsDTO): Observable<PaymentDetailsWsDTO> {
     return this.postAt<PaymentDetailsWsDTO>(`${userId}/carts/${cartId}/paymentdetails`, paymentDetails);
   }
 
@@ -394,7 +394,7 @@ export class UsersService extends RestService {
    * @param {string} paymentDetailsId
    * @returns {Observable<void>}
    */
-  setPaymentDetails(userId: UserIdChoice, cartId = 'current', paymentDetailsId: string): Observable<void> {
+  setPaymentDetails(userId: UserIdChoice | string, cartId = 'current', paymentDetailsId: string): Observable<void> {
     return this.put(`${userId}/carts/${cartId}/paymentdetails`, this.toHttpParams({paymentDetailsId: paymentDetailsId}));
   }
 
@@ -406,7 +406,7 @@ export class UsersService extends RestService {
    * @param {string} cartId
    * @returns {Observable<PromotionResultListWsDTO>}
    */
-  getPromotions(userId: UserIdChoice, cartId = 'current'): Observable<PromotionResultListWsDTO> {
+  getPromotions(userId: UserIdChoice | string, cartId = 'current'): Observable<PromotionResultListWsDTO> {
     return this.get<PromotionResultListWsDTO>(`${userId}/carts/${cartId}/promotions`);
   }
 
@@ -419,7 +419,7 @@ export class UsersService extends RestService {
    * @param {string} promotionId
    * @returns {Observable<void>}
    */
-  addPromotion(userId: UserIdChoice, cartId = 'current', promotionId: string): Observable<void> {
+  addPromotion(userId: UserIdChoice | string, cartId = 'current', promotionId: string): Observable<void> {
     return this.postAt(`${userId}/carts/${cartId}/promotions`, this.toHttpParams({promotionId: promotionId}));
   }
 
@@ -432,7 +432,7 @@ export class UsersService extends RestService {
    * @param {string} promotionId
    * @returns {Observable<PromotionResultListWsDTO>}
    */
-  getPromotion(userId: UserIdChoice, cartId = 'current', promotionId: string): Observable<PromotionResultListWsDTO> {
+  getPromotion(userId: UserIdChoice | string, cartId = 'current', promotionId: string): Observable<PromotionResultListWsDTO> {
     return this.get<PromotionResultListWsDTO>(`${userId}/carts/${cartId}/promotions/${promotionId}`);
   }
 
@@ -445,11 +445,11 @@ export class UsersService extends RestService {
    * @param {string} promotionId
    * @returns {Observable<void>}
    */
-  delPromotion(userId: UserIdChoice, cartId = 'current', promotionId: string): Observable<void> {
+  delPromotion(userId: UserIdChoice | string, cartId = 'current', promotionId: string): Observable<void> {
     return this.delete(`${userId}/carts/${cartId}/promotions/${promotionId}`);
   }
 
-  restoreCart(userId: UserIdChoice, cartId = 'current'): Observable<SaveCartResultWsDTO> {
+  restoreCart(userId: UserIdChoice | string, cartId = 'current'): Observable<SaveCartResultWsDTO> {
     return this.patch<SaveCartResultWsDTO>(`${userId}/carts/${cartId}/restoresavedcart`, null);
   }
 
@@ -460,7 +460,7 @@ export class UsersService extends RestService {
    * @param {{saveCartName: string; saveCartDescription?: string}} details
    * @returns {Observable<SaveCartResultWsDTO>}
    */
-  saveCart(userId: UserIdChoice, cartId = 'current', details: {
+  saveCart(userId: UserIdChoice | string, cartId = 'current', details: {
     saveCartName: string
     saveCartDescription?: string
   }): Observable<SaveCartResultWsDTO> {
@@ -473,7 +473,7 @@ export class UsersService extends RestService {
    * @param {string} cartId
    * @returns {Observable<SaveCartResultWsDTO>}
    */
-  getSavedCart(userId: UserIdChoice, cartId = 'current'): Observable<SaveCartResultWsDTO> {
+  getSavedCart(userId: UserIdChoice | string, cartId = 'current'): Observable<SaveCartResultWsDTO> {
     return this.get<SaveCartResultWsDTO>(`${userId}/carts/${cartId}/savedcart`);
   }
 
@@ -483,7 +483,7 @@ export class UsersService extends RestService {
    * @param {string} cartId
    * @returns {Observable<VoucherListWsDTO>}
    */
-  getVouchers(userId: UserIdChoice, cartId = 'current'): Observable<VoucherListWsDTO> {
+  getVouchers(userId: UserIdChoice | string, cartId = 'current'): Observable<VoucherListWsDTO> {
     return this.get<VoucherListWsDTO>(`${userId}/carts/${cartId}/vouchers`);
   }
 
@@ -494,7 +494,7 @@ export class UsersService extends RestService {
    * @param {string} voucherId
    * @returns {Observable<void>}
    */
-  addVoucher(userId: UserIdChoice, cartId = 'current', voucherId: string): Observable<void> {
+  addVoucher(userId: UserIdChoice | string, cartId = 'current', voucherId: string): Observable<void> {
     return this.postAt(`${userId}/carts/${cartId}/vouchers`, this.toHttpParams({voucherId: voucherId}));
   }
 
@@ -505,7 +505,7 @@ export class UsersService extends RestService {
    * @param {string} voucherId
    * @returns {Observable<void>}
    */
-  delVoucher(userId: UserIdChoice, cartId = 'current', voucherId: string): Observable<void> {
+  delVoucher(userId: UserIdChoice | string, cartId = 'current', voucherId: string): Observable<void> {
     return this.delete(`${userId}/carts/${cartId}/vouchers/${voucherId}`);
   }
 
@@ -514,7 +514,7 @@ export class UsersService extends RestService {
    * @param {UserIdChoice} userId
    * @returns {Observable<UserGroupListWsDTO>}
    */
-  getCustomerGroups(userId: UserIdChoice): Observable<UserGroupListWsDTO> {
+  getCustomerGroups(userId: UserIdChoice | string): Observable<UserGroupListWsDTO> {
     return this.get<UserGroupListWsDTO>(`${userId}/customergroups`);
   }
 
@@ -524,7 +524,7 @@ export class UsersService extends RestService {
    * @param {{password: string; newLogin: string}} login
    * @returns {Observable<void>}
    */
-  setLogin(userId: UserIdChoice, login: {
+  setLogin(userId: UserIdChoice | string, login: {
     /**
      * Customer's current password.
      */
@@ -544,7 +544,7 @@ export class UsersService extends RestService {
    * @param {{statuses?: string; pageSize?: number; sort?: string; currentPage?: number}} queryParams
    * @returns {Observable<OrderHistoryListWsDTO>}
    */
-  getOrders(userId: UserIdChoice, queryParams: {
+  getOrders(userId: UserIdChoice | string, queryParams: {
     /**
      * Filters only certain order statuses.
      * It means: statuses=CANCELLED,CHECKED_VALID would only return orders with status CANCELLED or CHECKED_VALID.
@@ -572,7 +572,7 @@ export class UsersService extends RestService {
    * @param {{cartId: string; securityCode: string}} cart
    * @returns {Observable<OrderWsDTO>}
    */
-  placeOrder(userId: UserIdChoice, cart: {
+  placeOrder(userId: UserIdChoice | string, cart: {
     /**
      * Cart code for logged in user, cart GUID for guest checkout
      */
@@ -591,7 +591,7 @@ export class UsersService extends RestService {
    * @param {string} code
    * @returns {Observable<OrderWsDTO>}
    */
-  getOrder(userId: UserIdChoice, code: string): Observable<OrderWsDTO> {
+  getOrder(userId: UserIdChoice | string, code: string): Observable<OrderWsDTO> {
     return this.get<OrderWsDTO>(`${userId}/orders/${code}`);
   }
 
@@ -601,7 +601,7 @@ export class UsersService extends RestService {
    * @param {{new: string; old: string}} password
    * @returns {Observable<void>}
    */
-  setPassword(userId: UserIdChoice, password: {
+  setPassword(userId: UserIdChoice | string, password: {
     /**
      * New password
      */
@@ -620,7 +620,7 @@ export class UsersService extends RestService {
    * @param {{saved?: boolean}} queryParams
    * @returns {Observable<PaymentDetailsListWsDTO>}
    */
-  getPaymentDetails(userId: UserIdChoice, queryParams?: {
+  getPaymentDetails(userId: UserIdChoice | string, queryParams?: {
     /**
      * Type of payment details
      */
@@ -635,7 +635,7 @@ export class UsersService extends RestService {
    * @param {string} paymentDetailsId
    * @returns {Observable<PaymentDetailsWsDTO>}
    */
-  getPaymentDetail(userId: UserIdChoice, paymentDetailsId: string): Observable<PaymentDetailsWsDTO> {
+  getPaymentDetail(userId: UserIdChoice | string, paymentDetailsId: string): Observable<PaymentDetailsWsDTO> {
     return this.get<PaymentDetailsWsDTO>(`${userId}/paymentdetails/${paymentDetailsId}`);
   }
 
@@ -647,7 +647,7 @@ export class UsersService extends RestService {
    * @param {PaymentDetailsWsDTO} paymentDetail
    * @returns {Observable<void>}
    */
-  setPaymentDetail(userId: UserIdChoice, paymentDetailsId: string, paymentDetail: PaymentDetailsWsDTO): Observable<void> {
+  setPaymentDetail(userId: UserIdChoice | string, paymentDetailsId: string, paymentDetail: PaymentDetailsWsDTO): Observable<void> {
     return this.patch(`${userId}/paymentdetails/${paymentDetailsId}`, paymentDetail);
   }
 
@@ -657,7 +657,7 @@ export class UsersService extends RestService {
    * @param {string} paymentDetailsId
    * @returns {Observable<void>}
    */
-  delPaymentDetail(userId: UserIdChoice, paymentDetailsId: string): Observable<void> {
+  delPaymentDetail(userId: UserIdChoice | string, paymentDetailsId: string): Observable<void> {
     return this.delete(`${userId}/paymentdetails/${paymentDetailsId}`);
   }
 }
