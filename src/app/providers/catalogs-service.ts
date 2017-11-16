@@ -63,7 +63,10 @@ export class CatalogsService extends RestService {
    * @param {PageableRequestWsDTO} queryParams
    * @returns {Observable<CategoryHierarchyWsDTO>}
    */
-  getCategoryHierarchy(catalogId: string, catalogVersionId: string, categoryId: string, queryParams?: PageableRequestWsDTO): Observable<CategoryHierarchyWsDTO> {
+  getCategoryHierarchy(catalogId: string,
+                       catalogVersionId: string,
+                       categoryId: string,
+                       queryParams?: PageableRequestWsDTO): Observable<CategoryHierarchyWsDTO> {
     return this.get(`${catalogId}/${catalogVersionId}/categories/${categoryId}`, {params: queryParams});
   }
 }

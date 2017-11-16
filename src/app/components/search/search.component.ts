@@ -22,7 +22,10 @@ export class SearchComponent {
       .distinctUntilChanged()
       .do(() => this.searching = true)
       .switchMap(term =>
-        this.productsService.search({query: term, fields: 'FULL'}).map(value => value.products).do(() => this.searchFailed = false).catch(() => {
+        this.productsService.search({
+          query: term,
+          fields: 'FULL'
+        }).map(value => value.products).do(() => this.searchFailed = false).catch(() => {
           this.searchFailed = true;
           return Observable.of([]);
         })

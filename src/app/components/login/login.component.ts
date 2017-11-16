@@ -9,7 +9,7 @@ export class ImplicitOauthSettings implements ImplicitOAuthConfig {
 }
 
 export class ResourceOAuthSettings implements ResourceOAuthConfig {
-  tokenPath = 'http://localhost:9001/authorizationserver/oauth/token';
+  tokenPath = 'https://localhost:9002/authorizationserver/oauth/token';
   profileUri = 'http://localhost:9001/rest/v2/electronics/users/current';
   clientId = 'client-side';
   clientSecret = 'secret';
@@ -22,7 +22,7 @@ export class ResourceOAuthSettings implements ResourceOAuthConfig {
   templateUrl: 'login.component.html',
   styleUrls: ['login.component.scss']
 })
-export class LoginComponent extends ImplicitOauthSettings {
+export class LoginComponent extends ResourceOAuthSettings {
 
   constructor() {
     super()

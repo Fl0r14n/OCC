@@ -1,4 +1,4 @@
-import {Component, Injectable, Injector, Input, NgModule} from '@angular/core';
+import {Component, HostListener, Injectable, Injector, Input, NgModule} from '@angular/core';
 import {
   HTTP_INTERCEPTORS, HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 } from '@angular/common/http';
@@ -6,6 +6,7 @@ import {NavigationEnd, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from '../app.routing';
+import {FormsModule} from '@angular/forms';
 
 export enum OAuthEvent {
   LOGOUT = 'oauth:logout',
@@ -197,18 +198,7 @@ export class OAuthInterceptor implements HttpInterceptor {
   }
 }
 
-@Component({
-  selector: 'my-implicit-oauth',
-  template: `
-    <a href="#" class="oauth {{className}}">
-      <span *ngIf="isLogout()" (click)="oauth.login()">{{i18nLogin}}</span>
-      <span *ngIf="isAuthorized()" (click)="oauth.logout()">{{i18nLogout}}&nbsp;<strong>{{getEmail()}}</strong></span>
-      <span *ngIf="isDenied()" (click)="oauth.login()">{{i18nDenied}}</span>
-    </a>
-  `
-})
-export class ImplicitOAuthComponent {
-
+export class OAuthComponent {
   @Input()
   className: string;
   @Input()
@@ -221,11 +211,6 @@ export class ImplicitOAuthComponent {
   @Input()
   set storage(storage: Storage) {
     this.oauth.storage = storage;
-  }
-
-  @Input()
-  set oauthConfig(oauthConfig: ImplicitOAuthConfig) {
-    this.oauth.configure(oauthConfig);
   }
 
   constructor(protected oauth: OAuthService) {
@@ -248,19 +233,123 @@ export class ImplicitOAuthComponent {
   }
 }
 
+
+@Component({
+  selector: 'my-implicit-oauth',
+  template: `
+    <a href="#" class="oauth {{className}}">
+      <span *ngIf="isLogout()" (click)="oauth.login()">{{i18nLogin}}</span>
+      <span *ngIf="isAuthorized()" (click)="oauth.logout()">{{i18nLogout}}&nbsp;<strong>{{getEmail()}}</strong></span>
+      <span *ngIf="isDenied()" (click)="oauth.login()">{{i18nDenied}}</span>
+    </a>
+  `
+})
+export class ImplicitOAuthComponent extends OAuthComponent {
+
+  constructor(oauth: OAuthService) {
+    super(oauth);
+  }
+
+  @Input()
+  set oauthConfig(oauthConfig: ImplicitOAuthConfig) {
+    this.oauth.configure(oauthConfig);
+  }
+}
+
 @Component({
   selector: 'my-resource-oauth',
   template: `
-    // TODO
-  `
+    <div class="oauth dropdown {{collapse?'show':''}} {{className}}">
+      <a href="#" class="dropdown-toogle" [innerHtml]="getText()" (click)="collapse = !collapse"></a>
+      <div class="dropdown-menu {{collapse?'show':''}}">
+        <form class="p-3" *ngIf="isLogout() || isDenied()" (submit)="oauth.login()">
+          <div class="form-group">
+            <input class="form-control" name="username" required [(ngModel)]="oauth.username"
+                   [placeholder]="i18Username">
+          </div>
+          <div class="form-group">
+            <input class="form-control" name="password" required [(ngModel)]="oauth.password"
+                   [placeholder]="i18Password">
+          </div>
+          <button type="submit" class="btn btn-primary">{{i18nLogin}}</button>
+        </form>
+        <button *ngIf="isAuthorized()" type="button" (click)="oauth.logout()">{{i18nLogout}}</button>
+      </div>
+    </div>
+  `,
+  styles: [`
+    .oauth .dropdown-menu {
+      left: auto;
+      right: 0;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+      min-width: 250px;
+    }
+    .oauth .dropdown-menu:before {
+      content: '';
+      display: inline-block;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-bottom: 7px solid #ccc;
+      border-bottom-color: rgba(0, 0, 0, 0.2);
+      position: absolute;
+      top: -7px;
+      left: auto;
+      right: 15px;
+    }
+    .oauth .dropdown-menu:after {
+      content: '';
+      display: inline-block;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 6px solid #ffffff;
+      position: absolute;
+      top: -6px;
+      left: auto;
+      right: 16px;
+    }
+  `]
 })
-export class ResourceOAuthComponent {
-  // TODO
+export class ResourceOAuthComponent extends OAuthComponent {
+
+  @Input()
+  i18Username = 'Username';
+  @Input()
+  i18Password = 'Password';
+  collapse = false;
+
+  constructor(oauth: OAuthService) {
+    super(oauth);
+  }
+
+  @Input()
+  set oauthConfig(oauthConfig: ResourceOAuthConfig) {
+    this.oauth.configure(oauthConfig);
+  }
+
+  getText() {
+    switch (this.oauth.status) {
+      case OAuthEvent.LOGOUT:
+        return this.i18nLogin;
+      case OAuthEvent.AUTHORIZED:
+        return `${this.i18nLogout}&nbsp;<strong>${this.getEmail()}</strong>`;
+      case OAuthEvent.DENIED:
+        return this.i18nDenied;
+    }
+  }
+
+  @HostListener('keyup', ['$event'])
+  keyboardEvent(event: KeyboardEvent) {
+    let x = event.keyCode;
+    if (x === 27) {
+      this.collapse = false;
+    }
+  }
 }
 
 @NgModule({
   imports: [
     BrowserModule,
+    FormsModule,
     AppRoutingModule
   ],
   declarations: [
