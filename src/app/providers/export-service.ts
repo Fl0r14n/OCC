@@ -1,6 +1,6 @@
 import {RestService} from './rest-service';
 import {Injectable} from '@angular/core';
-import {ProductListWsDTO} from './types/ycommercewebservices';
+import {PageableRequestWsDTO, ProductListWsDTO} from './types/ycommercewebservices';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 
@@ -18,7 +18,7 @@ export class ExportService extends RestService {
   /**
    * Used for product export.
    * Depending on the timestamp parameter, it can return all products or only products modified after the given time.
-   * @param {{catalog?: string; pageSize?: number; currentPage?: number; version?: string; timestamp?: Date}} queryParams
+   * @param {{catalog?: string; version?: string; timestamp?: Date} & PageableRequestWsDTO} queryParams
    * @returns {Observable<ProductListWsDTO>}
    */
   getProducts(queryParams?: {
@@ -26,14 +26,6 @@ export class ExportService extends RestService {
      * Catalog from which get products. Must be provided along with version.
      */
     catalog?: string
-    /**
-     * The number of results returned per page.
-     */
-    pageSize?: number
-    /**
-     * The current result page requested.
-     */
-    currentPage?: number
     /**
      * Catalog version. Must be provided along with catalog.
      */
@@ -43,7 +35,7 @@ export class ExportService extends RestService {
      * This parameter should be in RFC-8601 format.
      */
     timestamp?: Date
-  }): Observable<ProductListWsDTO> {
+  } & PageableRequestWsDTO): Observable<ProductListWsDTO> {
     return this.get(`products`, {params: queryParams});
   }
 }

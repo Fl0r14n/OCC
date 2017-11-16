@@ -7,8 +7,8 @@ import {
   DeliveryModeListWsDTO,
   DeliveryModeWsDTO, OrderEntryListWsDTO, OrderEntryWsDTO, OrderHistoryListWsDTO, OrderWsDTO, PaymentDetailsListWsDTO,
   PaymentDetailsWsDTO,
-  PromotionResultListWsDTO,
-  SaveCartResultWsDTO, UserGroupListWsDTO,
+  PromotionResultListWsDTO, RequestWsDTO,
+  SaveCartResultWsDTO, SortableRequestWsDTO, UserGroupListWsDTO,
   UserSignUpWsDTO,
   UserWsDTO, VoucherListWsDTO
 } from './types/ycommercewebservices';
@@ -47,10 +47,11 @@ export class UsersService extends RestService {
    * @param {UserIdChoice} userId. User identifier or one of the literals below :<br/>
    * 'current' for currently authenticated user<br/>
    * 'anonymous' for anonymous user
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<UserWsDTO>}
    */
-  getUser(userId: UserIdChoice | string): Observable<UserWsDTO> {
-    return this.get<UserWsDTO>(userId);
+  getUser(userId: UserIdChoice | string, queryParams?: RequestWsDTO): Observable<UserWsDTO> {
+    return this.get<UserWsDTO>(userId, {params: queryParams});
   }
 
   /**
@@ -75,10 +76,11 @@ export class UsersService extends RestService {
   /**
    * Returns customer's addresses.
    * @param {UserIdChoice} userId
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<AddressListWsDTO>}
    */
-  getAddresses(userId: UserIdChoice | string): Observable<AddressListWsDTO> {
-    return this.get<AddressListWsDTO>(`${userId}/addresses`);
+  getAddresses(userId: UserIdChoice | string, queryParams?: RequestWsDTO): Observable<AddressListWsDTO> {
+    return this.get<AddressListWsDTO>(`${userId}/addresses`, {params: queryParams});
   }
 
   /**
@@ -105,10 +107,11 @@ export class UsersService extends RestService {
    * Returns detailed information about address with a given id.
    * @param {UserIdChoice} userId
    * @param {string} addressId
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<AddressWsDTO>}
    */
-  getAddress(userId: UserIdChoice | string, addressId: string): Observable<AddressWsDTO> {
-    return this.get<AddressWsDTO>(`${userId}/addresses/${addressId}`);
+  getAddress(userId: UserIdChoice | string, addressId: string, queryParams?: RequestWsDTO): Observable<AddressWsDTO> {
+    return this.get<AddressWsDTO>(`${userId}/addresses/${addressId}`, {params: queryParams});
   }
 
   /**
@@ -135,7 +138,7 @@ export class UsersService extends RestService {
   /**
    * Lists all customer carts.
    * @param {UserIdChoice} userId
-   * @param {{savedCartsOnly?: string; pageSize?: number; sort?: string; currentPage?: number}} queryParams
+   * @param {{savedCartsOnly?: string} & SortableRequestWsDTO} queryParams
    * @returns {Observable<CartListWsDTO>}
    */
   getCarts(userId: UserIdChoice | string, queryParams?: {
@@ -143,19 +146,7 @@ export class UsersService extends RestService {
      * optional parameter. If the parameter is provided and its value is true only saved carts are returned.
      */
     savedCartsOnly?: string
-    /**
-     * optional {@link PaginationData} parameter in case of savedCartsOnly == true. Default value 20.
-     */
-    pageSize?: number
-    /**
-     * optional sort criterion in case of savedCartsOnly == true. No default value.
-     */
-    sort?: string
-    /**
-     * optional pagination parameter in case of savedCartsOnly == true. Default value 0.
-     */
-    currentPage?: number
-  }): Observable<CartListWsDTO> {
+  } & SortableRequestWsDTO): Observable<CartListWsDTO> {
     return this.get<CartListWsDTO>(`${userId}/carts`, {params: queryParams});
   }
 
@@ -182,10 +173,11 @@ export class UsersService extends RestService {
    * Returns the cart with a given identifier.
    * @param {UserIdChoice} userId
    * @param {string} cartId
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<CartWsDTO>}
    */
-  getCart(userId: UserIdChoice | string, cartId = 'current'): Observable<CartWsDTO> {
-    return this.get<CartWsDTO>(`${userId}/carts/${cartId}`);
+  getCart(userId: UserIdChoice | string, cartId = 'current', queryParams?: RequestWsDTO): Observable<CartWsDTO> {
+    return this.get<CartWsDTO>(`${userId}/carts/${cartId}`, {params: queryParams});
   }
 
   /**
@@ -258,20 +250,22 @@ export class UsersService extends RestService {
    * A delivery address must be set for the cart, otherwise an empty list will be returned.
    * @param {UserIdChoice} userId
    * @param {string} cartId
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<DeliveryModeListWsDTO>}
    */
-  getDeliveryModes(userId: UserIdChoice | string, cartId = 'current'): Observable<DeliveryModeListWsDTO> {
-    return this.get<DeliveryModeListWsDTO>(`${userId}/carts/${cartId}/deliverymodes`);
+  getDeliveryModes(userId: UserIdChoice | string, cartId = 'current', queryParams?: RequestWsDTO): Observable<DeliveryModeListWsDTO> {
+    return this.get<DeliveryModeListWsDTO>(`${userId}/carts/${cartId}/deliverymodes`, {params: queryParams});
   }
 
   /**
    * Returns the delivery mode selected for the cart.
    * @param {UserIdChoice} userId
    * @param {string} cartId
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<DeliveryModeWsDTO>}
    */
-  getDeliveryMode(userId: UserIdChoice | string, cartId = 'current'): Observable<DeliveryModeWsDTO> {
-    return this.get<DeliveryModeWsDTO>(`${userId}/carts/${cartId}/deliverymode`)
+  getDeliveryMode(userId: UserIdChoice | string, cartId = 'current', queryParams?: RequestWsDTO): Observable<DeliveryModeWsDTO> {
+    return this.get<DeliveryModeWsDTO>(`${userId}/carts/${cartId}/deliverymode`, {params: queryParams})
   }
 
   /**
@@ -310,10 +304,11 @@ export class UsersService extends RestService {
    * Returns cart entries.
    * @param {UserIdChoice} userId
    * @param {string} cartId
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<OrderEntryListWsDTO>}
    */
-  getCartEntries(userId: UserIdChoice | string, cartId = 'current'): Observable<OrderEntryListWsDTO> {
-    return this.get<OrderEntryListWsDTO>(`${userId}/carts/${cartId}/entries`);
+  getCartEntries(userId: UserIdChoice | string, cartId = 'current', queryParams?: RequestWsDTO): Observable<OrderEntryListWsDTO> {
+    return this.get<OrderEntryListWsDTO>(`${userId}/carts/${cartId}/entries`, {params: queryParams});
   }
 
   /**
@@ -332,10 +327,13 @@ export class UsersService extends RestService {
    * @param {UserIdChoice} userId
    * @param {string} cartId
    * @param {string} entryNumber
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<OrderEntryWsDTO>}
    */
-  getCartEntry(userId: UserIdChoice | string, cartId = 'current', entryNumber: string): Observable<OrderEntryWsDTO> {
-    return this.get<OrderEntryWsDTO>(`${userId}/carts/${cartId}/entries/${entryNumber}`);
+  getCartEntry(userId: UserIdChoice | string,
+               cartId = 'current', entryNumber: string,
+               queryParams?: RequestWsDTO): Observable<OrderEntryWsDTO> {
+    return this.get<OrderEntryWsDTO>(`${userId}/carts/${cartId}/entries/${entryNumber}`, {params: queryParams});
   }
 
   /**
@@ -383,7 +381,8 @@ export class UsersService extends RestService {
    * @param {PaymentDetailsWsDTO} paymentDetails
    * @returns {Observable<PaymentDetailsWsDTO>}
    */
-  addPaymentDetails(userId: UserIdChoice | string, cartId = 'current', paymentDetails: PaymentDetailsWsDTO): Observable<PaymentDetailsWsDTO> {
+  addPaymentDetails(userId: UserIdChoice | string, cartId = 'current',
+                    paymentDetails: PaymentDetailsWsDTO): Observable<PaymentDetailsWsDTO> {
     return this.postAt<PaymentDetailsWsDTO>(`${userId}/carts/${cartId}/paymentdetails`, paymentDetails);
   }
 
@@ -404,10 +403,11 @@ export class UsersService extends RestService {
    * and therefore some of them are currently not compatible with the new promotion engine.
    * @param {UserIdChoice} userId
    * @param {string} cartId
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<PromotionResultListWsDTO>}
    */
-  getPromotions(userId: UserIdChoice | string, cartId = 'current'): Observable<PromotionResultListWsDTO> {
-    return this.get<PromotionResultListWsDTO>(`${userId}/carts/${cartId}/promotions`);
+  getPromotions(userId: UserIdChoice | string, cartId = 'current', queryParams?: RequestWsDTO): Observable<PromotionResultListWsDTO> {
+    return this.get<PromotionResultListWsDTO>(`${userId}/carts/${cartId}/promotions`, {params: queryParams});
   }
 
   /**
@@ -430,10 +430,12 @@ export class UsersService extends RestService {
    * @param {UserIdChoice} userId
    * @param {string} cartId
    * @param {string} promotionId
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<PromotionResultListWsDTO>}
    */
-  getPromotion(userId: UserIdChoice | string, cartId = 'current', promotionId: string): Observable<PromotionResultListWsDTO> {
-    return this.get<PromotionResultListWsDTO>(`${userId}/carts/${cartId}/promotions/${promotionId}`);
+  getPromotion(userId: UserIdChoice | string, cartId = 'current',
+               promotionId: string, queryParams?: RequestWsDTO): Observable<PromotionResultListWsDTO> {
+    return this.get<PromotionResultListWsDTO>(`${userId}/carts/${cartId}/promotions/${promotionId}`, {params: queryParams});
   }
 
   /**
@@ -471,20 +473,22 @@ export class UsersService extends RestService {
    * Returns saved cart by it id for authenticated user
    * @param {UserIdChoice} userId
    * @param {string} cartId
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<SaveCartResultWsDTO>}
    */
-  getSavedCart(userId: UserIdChoice | string, cartId = 'current'): Observable<SaveCartResultWsDTO> {
-    return this.get<SaveCartResultWsDTO>(`${userId}/carts/${cartId}/savedcart`);
+  getSavedCart(userId: UserIdChoice | string, cartId = 'current', queryParams?: RequestWsDTO): Observable<SaveCartResultWsDTO> {
+    return this.get<SaveCartResultWsDTO>(`${userId}/carts/${cartId}/savedcart`, {params: queryParams});
   }
 
   /**
    * Returns list of vouchers applied to the cart.
    * @param {UserIdChoice} userId
    * @param {string} cartId
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<VoucherListWsDTO>}
    */
-  getVouchers(userId: UserIdChoice | string, cartId = 'current'): Observable<VoucherListWsDTO> {
-    return this.get<VoucherListWsDTO>(`${userId}/carts/${cartId}/vouchers`);
+  getVouchers(userId: UserIdChoice | string, cartId = 'current', queryParams?: RequestWsDTO): Observable<VoucherListWsDTO> {
+    return this.get<VoucherListWsDTO>(`${userId}/carts/${cartId}/vouchers`, {params: queryParams});
   }
 
   /**
@@ -512,10 +516,11 @@ export class UsersService extends RestService {
   /**
    * Returns all customer groups of a customer.
    * @param {UserIdChoice} userId
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<UserGroupListWsDTO>}
    */
-  getCustomerGroups(userId: UserIdChoice | string): Observable<UserGroupListWsDTO> {
-    return this.get<UserGroupListWsDTO>(`${userId}/customergroups`);
+  getCustomerGroups(userId: UserIdChoice | string, queryParams?: RequestWsDTO): Observable<UserGroupListWsDTO> {
+    return this.get<UserGroupListWsDTO>(`${userId}/customergroups`, {params: queryParams});
   }
 
   /**
@@ -541,7 +546,7 @@ export class UsersService extends RestService {
    * Returns order history data for all orders placed by the specific user for the specific base store.<br/>
    * Response contains orders search result displayed in several pages if needed.
    * @param {UserIdChoice} userId
-   * @param {{statuses?: string; pageSize?: number; sort?: string; currentPage?: number}} queryParams
+   * @param {{statuses?: string} & SortableRequestWsDTO} queryParams
    * @returns {Observable<OrderHistoryListWsDTO>}
    */
   getOrders(userId: UserIdChoice | string, queryParams: {
@@ -550,19 +555,7 @@ export class UsersService extends RestService {
      * It means: statuses=CANCELLED,CHECKED_VALID would only return orders with status CANCELLED or CHECKED_VALID.
      */
     statuses?: string
-    /**
-     * The number of results returned per page. 20 default
-     */
-    pageSize?: number
-    /**
-     * Sorting method applied to the return results.
-     */
-    sort?: string
-    /**
-     * The current result page requested.
-     */
-    currentPage?: number
-  }): Observable<OrderHistoryListWsDTO> {
+  } & SortableRequestWsDTO): Observable<OrderHistoryListWsDTO> {
     return this.get<OrderHistoryListWsDTO>(`${userId}/orders`, {params: queryParams});
   }
 
@@ -589,10 +582,11 @@ export class UsersService extends RestService {
    * Returns specific order details based on a specific order code. The response contains detailed order information.
    * @param {UserIdChoice} userId
    * @param {string} code
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<OrderWsDTO>}
    */
-  getOrder(userId: UserIdChoice | string, code: string): Observable<OrderWsDTO> {
-    return this.get<OrderWsDTO>(`${userId}/orders/${code}`);
+  getOrder(userId: UserIdChoice | string, code: string, queryParams?: RequestWsDTO): Observable<OrderWsDTO> {
+    return this.get<OrderWsDTO>(`${userId}/orders/${code}`, {params: queryParams});
   }
 
   /**
@@ -617,7 +611,7 @@ export class UsersService extends RestService {
   /**
    * Return customer's credit card payment details list.
    * @param {UserIdChoice} userId
-   * @param {{saved?: boolean}} queryParams
+   * @param {{saved?: boolean} & RequestWsDTO} queryParams
    * @returns {Observable<PaymentDetailsListWsDTO>}
    */
   getPaymentDetails(userId: UserIdChoice | string, queryParams?: {
@@ -625,7 +619,7 @@ export class UsersService extends RestService {
      * Type of payment details
      */
     saved?: boolean
-  }): Observable<PaymentDetailsListWsDTO> {
+  } & RequestWsDTO): Observable<PaymentDetailsListWsDTO> {
     return this.get<PaymentDetailsListWsDTO>(`${userId}/paymentdetails`, {params: queryParams});
   }
 
@@ -633,10 +627,11 @@ export class UsersService extends RestService {
    * Returns customer's credit card payment details for a given id.
    * @param {UserIdChoice} userId
    * @param {string} paymentDetailsId
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<PaymentDetailsWsDTO>}
    */
-  getPaymentDetail(userId: UserIdChoice | string, paymentDetailsId: string): Observable<PaymentDetailsWsDTO> {
-    return this.get<PaymentDetailsWsDTO>(`${userId}/paymentdetails/${paymentDetailsId}`);
+  getPaymentDetail(userId: UserIdChoice | string, paymentDetailsId: string, queryParams?: RequestWsDTO): Observable<PaymentDetailsWsDTO> {
+    return this.get<PaymentDetailsWsDTO>(`${userId}/paymentdetails/${paymentDetailsId}`, {params: queryParams});
   }
 
   /**

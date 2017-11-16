@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {PointOfServiceWsDTO, StoreFinderSearchPageWsDTO} from './types/ycommercewebservices';
+import {
+  PointOfServiceWsDTO, RequestWsDTO, SortableRequestWsDTO, StoreFinderSearchPageWsDTO
+} from './types/ycommercewebservices';
 import {Observable} from 'rxjs/Observable';
 import {RestService} from './rest-service';
 
@@ -17,8 +19,7 @@ export class StoresService extends RestService {
 
   /**
    * Lists all store locations that are near the location specified in a query or based on latitude and longitude.
-   * @param {{query?: string; latitude?: number; pageSize?: number;
-   * accuracy?: number; sort?: string; currentPage?: number; radius?: number; longitude?: number}} queryParams
+   * @param {{query?: string; latitude?: number; accuracy?: number; radius?: number; longitude?: number} & SortableRequestWsDTO} queryParams
    * @returns {Observable<StoreFinderSearchPageWsDTO>}
    */
   getStores(queryParams?: {
@@ -31,21 +32,9 @@ export class StoresService extends RestService {
      */
     latitude?: number
     /**
-     * The number of results returned per page. 20 default
-     */
-    pageSize?: number
-    /**
      * Accuracy in meters.
      */
     accuracy?: number
-    /**
-     * Sorting method applied to the return results.
-     */
-    sort?: string
-    /**
-     * The current result page requested.
-     */
-    currentPage?: number
     /**
      * Radius in meters. Max value: 40075000.0 (Earth's perimeter).
      */
@@ -54,16 +43,17 @@ export class StoresService extends RestService {
      * Coordinate that specifies the east-west position of a point on the Earth's surface.
      */
     longitude?: number
-  }): Observable<StoreFinderSearchPageWsDTO> {
+  } & SortableRequestWsDTO): Observable<StoreFinderSearchPageWsDTO> {
     return this.query<StoreFinderSearchPageWsDTO>({params: queryParams});
   }
 
   /**
    * Returns store location based on its unique name.
    * @param {string} storeId. Store identifier (currently store name)
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<PointOfServiceWsDTO>}
    */
-  getStore(storeId?: string): Observable<PointOfServiceWsDTO> {
-    return this.get(storeId);
+  getStore(storeId?: string, queryParams?: RequestWsDTO): Observable<PointOfServiceWsDTO> {
+    return this.get(storeId, {params: queryParams});
   }
 }

@@ -4,7 +4,7 @@ import {
   CatalogListWsDTO,
   CatalogVersionWsDTO,
   CatalogWsDTO,
-  CategoryHierarchyWsDTO
+  CategoryHierarchyWsDTO, PageableRequestWsDTO, RequestWsDTO
 } from './types/ycommercewebservices';
 import {Observable} from 'rxjs/Observable';
 import {HttpClient} from '@angular/common/http';
@@ -27,29 +27,32 @@ export class CatalogsService extends RestService {
 
   /**
    * Returns all catalogs with versions defined for the base store.
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<CatalogListWsDTO>}
    */
-  getCatalogs(): Observable<CatalogListWsDTO> {
-    return this.query<CatalogListWsDTO>()
+  getCatalogs(queryParams?: RequestWsDTO): Observable<CatalogListWsDTO> {
+    return this.query<CatalogListWsDTO>({params: queryParams})
   }
 
   /**
    * Returns a information about a catalog based on its ID, along with versions defined for the current base store.
    * @param {string} catalogId. Catalog identifier
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<CatalogWsDTO>}
    */
-  getCatalog(catalogId: string): Observable<CatalogWsDTO> {
-    return this.get<CatalogWsDTO>(catalogId);
+  getCatalog(catalogId: string, queryParams?: RequestWsDTO): Observable<CatalogWsDTO> {
+    return this.get<CatalogWsDTO>(catalogId, {params: queryParams});
   }
 
   /**
    * Returns information about catalog version that exists for the current base store.
    * @param {string} catalogId. Catalog identifier
    * @param {string} catalogVersionId. Catalog version identifier
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<CatalogVersionWsDTO>}
    */
-  getCatalogVersion(catalogId: string, catalogVersionId: string): Observable<CatalogVersionWsDTO> {
-    return this.get<CatalogVersionWsDTO>(`${catalogId}/${catalogVersionId}`);
+  getCatalogVersion(catalogId: string, catalogVersionId: string, queryParams?: RequestWsDTO): Observable<CatalogVersionWsDTO> {
+    return this.get<CatalogVersionWsDTO>(`${catalogId}/${catalogVersionId}`, {params: queryParams});
   }
 
   /**
@@ -57,19 +60,10 @@ export class CatalogsService extends RestService {
    * @param {string} catalogId. Catalog identifier
    * @param {string} catalogVersionId. Catalog version identifier
    * @param {string} categoryId. Category identifier
-   * @param {{pageSize?: number; currentPage?: number}} queryParams
+   * @param {PageableRequestWsDTO} queryParams
    * @returns {Observable<CategoryHierarchyWsDTO>}
    */
-  getCategoryHierarchy(catalogId: string, catalogVersionId: string, categoryId: string, queryParams?: {
-    /**
-     * The number of results returned per page.
-     */
-    pageSize?: number
-    /**
-     * The current result page requested.
-     */
-    currentPage?: number
-  }): Observable<CategoryHierarchyWsDTO> {
+  getCategoryHierarchy(catalogId: string, catalogVersionId: string, categoryId: string, queryParams?: PageableRequestWsDTO): Observable<CategoryHierarchyWsDTO> {
     return this.get(`${catalogId}/${catalogVersionId}/categories/${categoryId}`, {params: queryParams});
   }
 }

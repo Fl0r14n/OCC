@@ -1,7 +1,7 @@
 import {RestService} from './rest-service';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
-import {OrderStatusUpdateElementListWsDTO} from './types/ycommercewebservices';
+import {OrderStatusUpdateElementListWsDTO, RequestWsDTO} from './types/ycommercewebservices';
 import {HttpClient} from '@angular/common/http';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class FeedsService extends RestService {
   /**
    * Returns the orders the status has changed for.
    * Returns only the elements from the current baseSite, updated after the provided timestamp.
-   * @param {{timestamp?: Date}} queryParams
+   * @param {{timestamp?: Date} & RequestWsDTO} queryParams
    * @returns {Observable<OrderStatusUpdateElementListWsDTO>}
    */
   getOrderStatusUpdate(queryParams?: {
@@ -26,7 +26,7 @@ export class FeedsService extends RestService {
      * Only items newer than the given parameter are retrieved. This parameter should be in RFC-8601 format.
      */
     timestamp?: Date
-  }): Observable<OrderStatusUpdateElementListWsDTO> {
+  } & RequestWsDTO): Observable<OrderStatusUpdateElementListWsDTO> {
     return this.get<OrderStatusUpdateElementListWsDTO>(`orders/statusfeed`, {params: queryParams});
   }
 }

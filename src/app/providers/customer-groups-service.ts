@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
-import {PrincipalWsDTO, UserGroupListWsDTO, UserGroupWsDTO} from './types/ycommercewebservices';
+import {
+  PageableRequestWsDTO, PrincipalWsDTO, RequestWsDTO, UserGroupListWsDTO, UserGroupWsDTO
+} from './types/ycommercewebservices';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {RestService} from './rest-service';
@@ -17,29 +19,21 @@ export class CustomerGroupsService extends RestService {
 
   /**
    * Returns all customer groups that are direct subgroups of a customergroup.
-   * @param {{pageSize?: number; currentPage?: number}} queryParams
+   * @param {PageableRequestWsDTO} queryParams
    * @returns {Observable<UserGroupListWsDTO>}
    */
-  getCustomerGroups(queryParams?: {
-    /**
-     * Number of customer group returned in one page. 20 default
-     */
-    pageSize?: number
-    /**
-     * Current page number (starts with 0)
-     */
-    currentPage?: number
-  }): Observable<UserGroupListWsDTO> {
-    return this.query<UserGroupListWsDTO>();
+  getCustomerGroups(queryParams?: PageableRequestWsDTO): Observable<UserGroupListWsDTO> {
+    return this.query<UserGroupListWsDTO>({params: queryParams});
   }
 
   /**
    * Returns a customer group with a specific groupId.
    * @param {string} groupId. Group identifier
+   * @param {RequestWsDTO} queryParams
    * @returns {Observable<UserGroupWsDTO>}
    */
-  getCustomerGroup(groupId: string): Observable<UserGroupWsDTO> {
-    return this.get<UserGroupWsDTO>(groupId);
+  getCustomerGroup(groupId: string, queryParams?: RequestWsDTO): Observable<UserGroupWsDTO> {
+    return this.get<UserGroupWsDTO>(groupId, {params: queryParams});
   }
 
   /**

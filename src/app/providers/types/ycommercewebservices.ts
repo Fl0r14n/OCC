@@ -1,3 +1,24 @@
+export enum FieldLevelMapping {
+  BASIC = 'BASIC',
+  DEFAULT = 'DEFAULT',
+  FULL = 'FULL'
+}
+
+export interface RequestWsDTO {
+  curr?: string
+  lang?: string
+  fields?: FieldLevelMapping | string
+}
+
+export interface PageableRequestWsDTO extends RequestWsDTO {
+  pageSize?: number
+  currentPage?: number
+}
+
+export interface SortableRequestWsDTO extends PageableRequestWsDTO {
+  sort?: string
+}
+
 export interface CardTypeWsDTO {
   code?: string
   name?: string
