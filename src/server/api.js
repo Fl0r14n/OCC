@@ -4,7 +4,7 @@ const fs = require('fs');
 
 module.exports.init = function (app) {
 
-  const basePath = '/api';
+  const basePath = '/mock/api';
 
   const buildPath = function (endpoint) {
     return basePath + endpoint;

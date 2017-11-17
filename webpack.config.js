@@ -282,12 +282,11 @@ module.exports = function makeWebpackConfig() {
   }
 
   if (!isProd) {
-    config.devServer.proxy = {
-      '/rest/v2': {
-        target: 'https://localhost:9002/rest/v2',
+    config.devServer.proxy = [{
+      context: ['/rest/v2/**', '/authorizationserver/**'],
+        target: 'https://localhost:9002',
         secure: false
-      }
-    }
+    }]
   }
 
   return config;
