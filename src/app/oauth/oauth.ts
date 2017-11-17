@@ -1,6 +1,6 @@
 import {Component, HostListener, Injectable, Injector, Input, NgModule} from '@angular/core';
 import {
-  HTTP_INTERCEPTORS, HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
+  HTTP_INTERCEPTORS, HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpParams, HttpRequest, HttpHeaders
 } from '@angular/common/http';
 import {NavigationEnd, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
@@ -109,7 +109,11 @@ export class OAuthService extends DefaultOAuthConfig {
       const appendChar = this.tokenPath.indexOf('?') === -1 ? '?' : '&';
       const authUrl = `${this.tokenPath}${appendChar}client_id=${this.clientId}&client_secret=${this.clientSecret
         }&grant_type=${this.grantType}&username=${this.username}&password=${this.password}`;
-      this.http.post(authUrl, null).subscribe(params => this.setToken(params));
+      this.http.post(authUrl, null).catch(error => {
+        console.log(error);
+        this.status = OAuthEvent.DENIED;
+        return Observable.empty();
+      }).subscribe(params => this.setToken(params));
     }
   }
 
@@ -262,7 +266,7 @@ export class ImplicitOAuthComponent extends OAuthComponent {
     <div class="oauth dropdown {{collapse?'show':''}} {{className}}">
       <a href="#" class="dropdown-toogle" [innerHtml]="getText()" (click)="collapse = !collapse"></a>
       <div class="dropdown-menu {{collapse?'show':''}}">
-        <form class="p-3" *ngIf="isLogout() || isDenied()" (submit)="oauth.login()">
+        <form class="p-3" *ngIf="isLogout() || isDenied()" (submit)="oauth.login(); collapse=false;">
           <div class="form-group">
             <input class="form-control" name="username" required [(ngModel)]="oauth.username"
                    [placeholder]="i18Username">
@@ -271,9 +275,15 @@ export class ImplicitOAuthComponent extends OAuthComponent {
             <input class="form-control" name="password" required [(ngModel)]="oauth.password"
                    [placeholder]="i18Password">
           </div>
-          <button type="submit" class="btn btn-primary">{{i18nLogin}}</button>
+          <div class="text-right">
+            <button type="submit" class="btn btn-primary">{{i18nLogin}}</button>
+          </div>
         </form>
-        <button *ngIf="isAuthorized()" type="button" (click)="oauth.logout()">{{i18nLogout}}</button>
+        <div *ngIf="isAuthorized()" class="p-3 text-right">
+          <button type="button" class="btn btn-primary" (click)="this.oauth.logout()">
+            {{i18nLogout}}
+          </button>
+        </div>
       </div>
     </div>
   `,
@@ -284,6 +294,7 @@ export class ImplicitOAuthComponent extends OAuthComponent {
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
       min-width: 250px;
     }
+
     .oauth .dropdown-menu:before {
       content: '';
       display: inline-block;
@@ -296,6 +307,7 @@ export class ImplicitOAuthComponent extends OAuthComponent {
       left: auto;
       right: 15px;
     }
+
     .oauth .dropdown-menu:after {
       content: '';
       display: inline-block;
@@ -337,10 +349,9 @@ export class ResourceOAuthComponent extends OAuthComponent {
     }
   }
 
-  @HostListener('keyup', ['$event'])
+  @HostListener('window:keyup', ['$event'])
   keyboardEvent(event: KeyboardEvent) {
-    let x = event.keyCode;
-    if (x === 27) {
+    if (event.keyCode === 27) {
       this.collapse = false;
     }
   }

@@ -11,7 +11,7 @@ export class ImplicitOauthSettings implements ImplicitOAuthConfig {
 export class ResourceOAuthSettings implements ResourceOAuthConfig {
   tokenPath = 'https://localhost:9002/authorizationserver/oauth/token';
   profileUri = 'http://localhost:9001/rest/v2/electronics/users/current';
-  clientId = 'client-side';
+  clientId = 'mobile_android';
   clientSecret = 'secret';
   username = '';
   password = '';
