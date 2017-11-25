@@ -1,8 +1,8 @@
-import {RestService} from './rest-service';
+import {RestService} from '../rest-service';
 import {Injectable} from '@angular/core';
-import {CountryListWsDTO, RequestWsDTO} from './types/ycommercewebservices';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
+import {CountryListWsDTO, RequestWsDTO} from '../types/ycommercewebservices';
 
 @Injectable()
 export class DeliveryCountriesService extends RestService {

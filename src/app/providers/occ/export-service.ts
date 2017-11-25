@@ -1,6 +1,6 @@
-import {RestService} from './rest-service';
+import {RestService} from '../rest-service';
 import {Injectable} from '@angular/core';
-import {PageableRequestWsDTO, ProductListWsDTO} from './types/ycommercewebservices';
+import {PageableRequestWsDTO, ProductListWsDTO} from '../types/ycommercewebservices';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 

@@ -1,13 +1,11 @@
-import {RestService} from './rest-service';
 import {Injectable} from '@angular/core';
-import {
-  CatalogListWsDTO,
-  CatalogVersionWsDTO,
-  CatalogWsDTO,
-  CategoryHierarchyWsDTO, PageableRequestWsDTO, RequestWsDTO
-} from './types/ycommercewebservices';
 import {Observable} from 'rxjs/Observable';
 import {HttpClient} from '@angular/common/http';
+import {RestService} from '../rest-service';
+import {
+  CatalogListWsDTO, CatalogVersionWsDTO, CatalogWsDTO, CategoryHierarchyWsDTO, PageableRequestWsDTO,
+  RequestWsDTO
+} from '../types/ycommercewebservices';
 
 export interface CatalogsQueryParams {
   pageSize?: number

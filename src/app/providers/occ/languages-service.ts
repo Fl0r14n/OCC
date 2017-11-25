@@ -1,7 +1,7 @@
-import {RestService} from './rest-service';
+import {RestService} from '../rest-service';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
-import {LanguageListWsDTO, RequestWsDTO} from './types/ycommercewebservices';
+import {LanguageListWsDTO, RequestWsDTO} from '../types/ycommercewebservices';
 import {HttpClient} from '@angular/common/http';
 
 @Injectable()

@@ -1,17 +1,22 @@
-import {Component, HostListener, Injectable, Injector, Input, NgModule} from '@angular/core';
 import {
-  HTTP_INTERCEPTORS, HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpParams, HttpRequest, HttpHeaders
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest
 } from '@angular/common/http';
+import {Component, EventEmitter, HostListener, Injectable, Injector, Input, NgModule} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {BrowserModule} from '@angular/platform-browser';
 import {NavigationEnd, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
-import {BrowserModule} from '@angular/platform-browser';
-import {AppRoutingModule} from '../app.routing';
-import {FormsModule} from '@angular/forms';
 
 export enum OAuthEvent {
   LOGOUT = 'oauth:logout',
   AUTHORIZED = 'oauth:autorized',
   DENIED = 'oauth:denied',
+  PROFILE = 'oauth:profile'
 }
 
 export interface OAuthConfig {
@@ -66,6 +71,7 @@ export class OAuthService extends DefaultOAuthConfig {
     error?: string
     expires_in?: Number
   };
+  onStatus = new EventEmitter<OAuthEvent>();
 
   constructor(protected http: HttpClient, protected router: Router) {
     super();
@@ -98,20 +104,18 @@ export class OAuthService extends DefaultOAuthConfig {
 
   login() {
     if (this.authorizePath) {
-      console.log('Authorize');
       const appendChar = this.authorizePath.indexOf('?') === -1 ? '?' : '&';
       const authUrl = `${this.authorizePath}${appendChar}response_type=${this.responseType}&client_id=${this.clientId
         }&redirect_uri=${this.redirectUri}&scope=${this.scope}&state=${this.state}`;
       location.replace(authUrl);
     }
     if (this.tokenPath) {
-      console.log('Tokenize');
       const appendChar = this.tokenPath.indexOf('?') === -1 ? '?' : '&';
       const authUrl = `${this.tokenPath}${appendChar}client_id=${this.clientId}&client_secret=${this.clientSecret
         }&grant_type=${this.grantType}&username=${this.username}&password=${this.password}`;
       this.http.post(authUrl, null).catch(error => {
-        console.log(error);
         this.status = OAuthEvent.DENIED;
+        this.onStatus.emit(OAuthEvent.DENIED);
         return Observable.empty();
       }).subscribe(params => this.setToken(params));
     }
@@ -120,25 +124,32 @@ export class OAuthService extends DefaultOAuthConfig {
   logout() {
     delete this.storage['token'];
     delete this.token;
+    delete this.profile;
     this.status = OAuthEvent.LOGOUT;
+    this.onStatus.emit(OAuthEvent.LOGOUT);
   }
 
   private setToken(params) {
     if (params.error) {
       this.status = OAuthEvent.DENIED;
+      this.onStatus.emit(OAuthEvent.DENIED);
       return;
     }
     this.token = this.token || {};
     Object.assign(this.token, params);
     this.storage['token'] = JSON.stringify(this.token);
     this.status = OAuthEvent.AUTHORIZED;
+    this.onStatus.emit(OAuthEvent.AUTHORIZED);
     this.startExpirationTimer();
     if (this.profileUri) {
       this.http.get(this.profileUri, {
         headers: {
           Authorization: `Bearer ${this.token.access_token}`
         }
-      }).subscribe(profile => this.profile = profile);
+      }).subscribe(profile => {
+        this.profile = profile;
+        this.onStatus.emit(OAuthEvent.PROFILE);
+      });
     }
   }
 
@@ -187,8 +198,10 @@ export class OAuthInterceptor implements HttpInterceptor {
   private oauth: OAuthService;
 
   constructor(injector: Injector) {
-    setTimeout(() => this.oauth = injector.get(OAuthService));
-  }
+    setTimeout(() => {
+      this.oauth = injector.get(OAuthService);
+    });
+  };
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (this.oauth && this.oauth.token && this.oauth.token.access_token) {
@@ -264,7 +277,7 @@ export class ImplicitOAuthComponent extends OAuthComponent {
   selector: 'my-resource-oauth',
   template: `
     <div class="oauth dropdown {{collapse?'show':''}} {{className}}">
-      <a href="#" class="dropdown-toogle" [innerHtml]="getText()" (click)="collapse = !collapse"></a>
+      <button class="btn btn-link p-0 dropdown-toogle" [innerHtml]="getText()" (click)="collapse = !collapse"></button>
       <div class="dropdown-menu {{collapse?'show':''}}">
         <form class="p-3" *ngIf="isLogout() || isDenied()" (submit)="oauth.login(); collapse=false;">
           <div class="form-group">
@@ -361,7 +374,6 @@ export class ResourceOAuthComponent extends OAuthComponent {
   imports: [
     BrowserModule,
     FormsModule,
-    AppRoutingModule
   ],
   declarations: [
     ImplicitOAuthComponent,

@@ -1,8 +1,8 @@
-import {RestService} from './rest-service';
+import {RestService} from '../rest-service';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
-import {PromotionListWsDTO, PromotionWsDTO, RequestWsDTO} from './types/ycommercewebservices';
+import {PromotionListWsDTO, PromotionWsDTO, RequestWsDTO} from '../types/ycommercewebservices';
 
 export enum PromotionType {
   ALL = 'all',

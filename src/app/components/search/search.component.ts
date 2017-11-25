@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
-import {ProductsService} from '../../providers/products-service';
 import {Observable} from 'rxjs/Observable';
+import {ProductsService} from '../../providers/occ/products-service';
 
 @Component({
   selector: 'my-search',

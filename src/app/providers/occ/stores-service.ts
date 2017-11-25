@@ -2,9 +2,9 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {
   PointOfServiceWsDTO, RequestWsDTO, SortableRequestWsDTO, StoreFinderSearchPageWsDTO
-} from './types/ycommercewebservices';
+} from '../types/ycommercewebservices';
 import {Observable} from 'rxjs/Observable';
-import {RestService} from './rest-service';
+import {RestService} from '../rest-service';
 
 @Injectable()
 export class StoresService extends RestService {

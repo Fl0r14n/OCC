@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
-import {
-  PageableRequestWsDTO, PrincipalWsDTO, RequestWsDTO, UserGroupListWsDTO, UserGroupWsDTO
-} from './types/ycommercewebservices';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
-import {RestService} from './rest-service';
+import {RestService} from '../rest-service';
+import {
+  PageableRequestWsDTO, PrincipalWsDTO, RequestWsDTO, UserGroupListWsDTO,
+  UserGroupWsDTO
+} from '../types/ycommercewebservices';
 
 @Injectable()
 export class CustomerGroupsService extends RestService {

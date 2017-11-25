@@ -1,8 +1,8 @@
-import {RestService} from './rest-service';
 import {Injectable} from '@angular/core';
-import {CurrencyListWsDTO, RequestWsDTO} from './types/ycommercewebservices';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
+import {RestService} from '../rest-service';
+import {CurrencyListWsDTO, RequestWsDTO} from '../types/ycommercewebservices';
 
 @Injectable()
 export class CurrenciesService extends RestService {
