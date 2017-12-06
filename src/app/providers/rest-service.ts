@@ -1,4 +1,4 @@
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParameterCodec, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 
 export interface RequestOptions {
@@ -11,6 +11,24 @@ interface HTTPClientRequestOptions {
   params?: HttpParams
 }
 
+class HttpParamEncoder implements HttpParameterCodec {
+  encodeKey(key: string): string {
+    return encodeURIComponent(key);
+  }
+
+  encodeValue(value: string): string {
+    return encodeURIComponent(value);
+  }
+
+  decodeKey(key: string): string {
+    return decodeURIComponent(key);
+  }
+
+  decodeValue(value: string): string {
+    return decodeURIComponent(value);
+  }
+}
+
 export abstract class RestService {
 
   protected basePath = '/rest/v2/electronics';
@@ -21,7 +39,7 @@ export abstract class RestService {
   }
 
   protected toHttpParams(data: Object): HttpParams {
-    let httpParams = new HttpParams();
+    let httpParams = new HttpParams({encoder: new HttpParamEncoder()});
     Object.keys(data).forEach(function (key) {
       httpParams = httpParams.append(key, data[key]);
     });

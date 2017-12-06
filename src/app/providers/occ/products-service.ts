@@ -88,7 +88,7 @@ export class ProductsService extends RestService {
      */
     term?: string
   } & RequestWsDTO): Observable<SuggestionListWsDTO> {
-    return this.get<SuggestionListWsDTO>(`search`, {params: queryParams});
+    return this.get<SuggestionListWsDTO>(`suggestions`, {params: queryParams});
   }
 
   /**
