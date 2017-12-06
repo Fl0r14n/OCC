@@ -1,0 +1,29 @@
+<div class="product-list-component">
+  <data-table
+    [items]="items"
+    [itemCount]="itemCount"
+    [indexColumn]="false"
+    [pagination]="true"
+    [header]="false"
+    (reload)="reloadItems($event)"
+    (rowClick)="rowClick($event)"
+    [rowTooltip]="rowTooltip">
+    <data-table-column property="code" header="Code" resizable="true">
+    </data-table-column>
+    <data-table-column property="name" header="Name" sortable="true" resizable="true">
+    </data-table-column>
+    <data-table-column property="manufacturer" header="Manufacturer" resizable="true">
+    </data-table-column>
+    <data-table-column property="price" header="Price" sortable="true">
+      <ng-template #dataTableCell let-item="item">
+        <span>{{item.price.formattedValue}}</span>
+      </ng-template>
+    </data-table-column>
+    <data-table-column property="stock" header="Stock" resizable="true">
+      <ng-template #dataTableCell let-item="item">
+        <span class="fa fa-check" *ngIf="item.stock.stockLevelStatus === 'inStock'"></span>
+        <span class="fa fa-times" *ngIf="item.stock.stockLevelStatus !== 'inStock'"></span>
+      </ng-template>
+    </data-table-column>
+  </data-table>
+</div>

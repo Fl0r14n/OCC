@@ -43,6 +43,7 @@
     "core-js": "*",
     "font-awesome": "*",
     "ng-bootstrap": "*",
+    "ngx-datatable-bootstrap4": "^0.3.1",
     "reflect-metadata": "*",
     "rxjs": "*",
     "typeface-work-sans": "*",
