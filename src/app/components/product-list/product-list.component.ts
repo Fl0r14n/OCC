@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {DataTableParams} from 'ngx-datatable-bootstrap4';
+import {DataTableCellEvent, DataTableHeaderEvent, DataTableParams, DataTableRowEvent} from 'ngx-datatable-bootstrap4';
 import {ProductsService} from '../../providers/occ/products-service';
 import {ProductWsDTO, SortableRequestWsDTO} from '../../providers/types/ycommercewebservices';
 
@@ -32,8 +32,22 @@ export class ProductListComponent {
     });
   }
 
-  rowClick(rowEvent) {
-    console.log('Clicked: ' + rowEvent.row.item.name);
+  rowClick(event: DataTableRowEvent) {
+    console.log('Clicked: ' + event.row.item.name);
+  }
+
+  headerClick(event: DataTableHeaderEvent) {
+    console.log('Header Clicked: ');
+    console.log(event)
+  }
+
+  cellClick(event: DataTableCellEvent) {
+    console.log('Cell Clicked: ');
+    console.log(event);
+  }
+
+  rowDoubleClick(event: DataTableRowEvent) {
+    console.log(' Double Clicked: ' + event.row.item.name);
   }
 
   rowTooltip(item) {

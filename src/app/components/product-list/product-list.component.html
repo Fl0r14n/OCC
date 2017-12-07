@@ -2,28 +2,31 @@
   <data-table
     [items]="items"
     [itemCount]="itemCount"
-    [indexColumn]="false"
+    [indexColumn]="true"
     [pagination]="true"
-    [header]="false"
+    [header]="true"
     (reload)="reloadItems($event)"
     (rowClick)="rowClick($event)"
+    (rowDoubleClick)="rowDoubleClick($event)"
+    (headerClick)="headerClick($event)"
+    (cellClick)="cellClick($event)"
     [rowTooltip]="rowTooltip">
-    <data-table-column property="code" header="Code" resizable="true">
-    </data-table-column>
-    <data-table-column property="name" header="Name" sortable="true" resizable="true">
-    </data-table-column>
-    <data-table-column property="manufacturer" header="Manufacturer" resizable="true">
-    </data-table-column>
-    <data-table-column property="price" header="Price" sortable="true">
+    <div data-table-column property="code" header="Code" resizable="true">
+    </div>
+    <div data-table-column property="name" header="Name" sortable="true" resizable="true">
+    </div>
+    <div data-table-column property="manufacturer" header="Manufacturer" resizable="true">
+    </div>
+    <div data-table-column property="price" header="Price" sortable="true">
       <ng-template #dataTableCell let-item="item">
         <span>{{item.price.formattedValue}}</span>
       </ng-template>
-    </data-table-column>
-    <data-table-column property="stock" header="Stock" resizable="true">
+    </div>
+    <div data-table-column property="stock" header="Stock" resizable="true">
       <ng-template #dataTableCell let-item="item">
         <span class="fa fa-check" *ngIf="item.stock.stockLevelStatus === 'inStock'"></span>
         <span class="fa fa-times" *ngIf="item.stock.stockLevelStatus !== 'inStock'"></span>
       </ng-template>
-    </data-table-column>
+    </div>
   </data-table>
 </div>
